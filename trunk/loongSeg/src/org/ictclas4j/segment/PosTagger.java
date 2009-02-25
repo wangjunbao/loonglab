@@ -500,8 +500,9 @@ public class PosTagger {
 						// Get the possible person name
 						while (nPos < j + patterns[k].length()) {
 							SegNode sn = sns.get(nPos);
-							if (sn.getPos() < 4
-									&& unknownDict.getFreq(sn.getWord(), sn.getPos()) < Utility.LITTLE_FREQUENCY)
+//							if (sn.getPos() < 4
+//									&& unknownDict.getFreq(sn.getWord(), sn.getPos()) < Utility.LITTLE_FREQUENCY)
+							if (getBestTag(sn) < 5)
 								personName += sn.getWord();
 							nPos += 1;
 						}
