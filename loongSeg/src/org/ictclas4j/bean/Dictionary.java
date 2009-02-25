@@ -568,13 +568,15 @@ public class Dictionary {
 				int found = findInOriginalTable(pw.getIndex(), pw.getRes(), -1);
 				if (found == -1) {
 					ArrayList<WordItem> wis = wts.get(pw.getIndex()).getWords();
-					for (int j = 0; j < wis.size(); j++) {
-						int compValue = GFString.compareTo(wis.get(j).getWord(), pw.getRes());
-						if (compValue == 1) {
-							found = j;
-							break;
+					
+					if(wis!=null)
+						for (int j = 0; j < wis.size(); j++) {
+							int compValue = GFString.compareTo(wis.get(j).getWord(), pw.getRes());
+							if (compValue == 1) {
+								found = j;
+								break;
+							}
 						}
-					}
 				}
 				// 从源词典表中找出去掉第一个开头的字之后相等的词
 				if (found >= 0 && wts != null && wts.get(pw.getIndex()) != null) {
