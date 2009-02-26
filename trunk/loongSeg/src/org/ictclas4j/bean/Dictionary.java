@@ -1,6 +1,7 @@
 package org.ictclas4j.bean;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -10,13 +11,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-//import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.ictclas4j.utility.GFCommon;
 import org.ictclas4j.utility.GFString;
 import org.ictclas4j.utility.Utility;
 
 
 public class Dictionary {
+	
+	static Log log = LogFactory.getLog(Dictionary.class);
+	
 	/**
 	 * 词典表,共6768个,GB2312编码
 	 */
@@ -119,9 +124,9 @@ public class Dictionary {
 
 			in.close();
 		} catch (FileNotFoundException e) {
-			//logger.error(e);
+			log.error(e.getMessage(),e);
 		} catch (IOException e) {
-			//logger.error(e);
+			log.error(e.getMessage(),e);
 		}
 		return true;
 	}
@@ -354,6 +359,11 @@ public class Dictionary {
 		return false;
 	}
 
+	/**
+	 * 取得某个词的词性
+	 * @param word
+	 * @return
+	 */
 	public ArrayList<WordItem> getHandle(String word) {
 		ArrayList<WordItem> result = null;
 
@@ -627,6 +637,34 @@ public class Dictionary {
 		}
 		return 0;
 	}
+	
+	
+	//输出到文本文件
+	public boolean outputChars(String sFilename) {
+		try {
+			BufferedOutputStream out = new BufferedOutputStream(
+					new FileOutputStream(sFilename), 1024 * 16);
+			
+			int i=0;
+			for (WordTable wt : wts) {
+				if(wt.getWords()!=null)
+					for (WordItem wi : wt.getWords()) {
+						String wordStr=Utility.getGB(i)+wi.getWord()+" "+wi.getFreq()+" "+wi.getHandle();
+						out.write(wordStr.getBytes("GBK"));
+						out.write('\r');
+						out.write('\n');
+					}
+					
+				i++;
+			}
+			
+			out.close();
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+			return false;
+		}
+		return true;
+	}
 
 	// ---------------------------------------------------------//
 	// 暂时不会用到的方法
@@ -638,13 +676,12 @@ public class Dictionary {
 		return false;
 	}
 
-	public boolean outputChars(String sFilename) {
-		return false;
-	}
+	
 
 	public boolean output(String sFilename) {
 		return false;
 	}
+	
 
 	public boolean getPOSString(int nPOS, String sPOSRet) {
 		return false;
