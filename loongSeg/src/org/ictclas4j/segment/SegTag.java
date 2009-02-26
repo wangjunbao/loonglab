@@ -25,13 +25,13 @@ public class SegTag {
 
 	public SegTag(int segPathCount) {
 		this.segPathCount = segPathCount;
-		coreDict = new Dictionary("data\\coreDict.dct");
+		coreDict = new Dictionary("data/coreDict.dct");
 
-		bigramDict = new Dictionary("data\\bigramDict.dct");
-		personTagger = new PosTagger(Utility.TAG_TYPE.TT_PERSON, "data\\nr", coreDict);
-		transPersonTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "data\\tr", coreDict);
-		placeTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "data\\ns", coreDict);
-		lexTagger = new PosTagger(Utility.TAG_TYPE.TT_NORMAL, "data\\lexical", coreDict);
+		bigramDict = new Dictionary("data/bigramDict.dct");
+		personTagger = new PosTagger(Utility.TAG_TYPE.TT_PERSON, "data/nr", coreDict);
+		transPersonTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "data/tr", coreDict);
+		placeTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "data/ns", coreDict);
+		lexTagger = new PosTagger(Utility.TAG_TYPE.TT_NORMAL, "data/lexical", coreDict);
 	}
 
 	public SegResult split(String src) {
@@ -187,20 +187,30 @@ public class SegTag {
 	public static void main(String[] args) {
 		SegTag segTag = new SegTag(1);	
 		
-		BufferedReader reader= new BufferedReader(new InputStreamReader(System.in));
-		String line=null;
-		try {
-			while ((line=reader.readLine())!=null) {
-				try { 
-					SegResult seg_res=segTag.split(line);
-					System.out.println(seg_res.getFinalResult());
-				} catch (Throwable t) {
-					t.printStackTrace();					
-				}
-			}
-		} catch (IOException e) {			
-			e.printStackTrace();
-		}						
+		segTag.outputDic();
+		
+//		BufferedReader reader= new BufferedReader(new InputStreamReader(System.in));
+//		String line=null;
+//		try {
+//			while ((line=reader.readLine())!=null) {
+//				try { 
+//					SegResult seg_res=segTag.split(line);
+//					System.out.println(seg_res.getFinalResult());
+//				} catch (Throwable t) {
+//					t.printStackTrace();					
+//				}
+//			}
+//		} catch (IOException e) {			
+//			e.printStackTrace();
+//		}						
+	}
+	
+	public void outputDic(){
+		coreDict.outputChars("coreDict.txt");
+		bigramDict.outputChars("bigramDict.txt");
+		personTagger.getUnknownDict().outputChars("nr.txt");
+		transPersonTagger.getUnknownDict().outputChars("tr.txt");
+		placeTagger.getUnknownDict().outputChars("ns.txt");
 	}
 	
 	private static void println2Err(String str) {
