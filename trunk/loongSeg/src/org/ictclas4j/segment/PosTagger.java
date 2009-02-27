@@ -735,5 +735,9 @@ public class PosTagger {
 	public Dictionary getUnknownDict() {
 		return unknownDict;
 	}
+	
+	public ContextStat getContextStat(){
+		return context;
+	}
 
 }
