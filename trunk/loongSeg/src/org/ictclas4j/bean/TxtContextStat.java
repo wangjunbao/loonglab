@@ -39,6 +39,17 @@ public class TxtContextStat extends ContextStat{
 			int key=new Integer(br.readLine());
 			int totalFreq =new Integer(br.readLine());
 			
+			tc.setKey(key);
+			tc.setTotalFreq(totalFreq);
+			String freqStr=br.readLine();
+			String[] freqArray=freqStr.split(" ");
+			int[] tagFreq = new int[tableLen];
+			for (int i = 0; i < tagFreq.length; i++) {
+				tagFreq[i]=new Integer(freqArray[i]);
+			}
+			
+			
+			
 			br.close();
 			
 		} catch (Exception e1) {
