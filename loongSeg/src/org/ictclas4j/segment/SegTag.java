@@ -1,15 +1,14 @@
 package org.ictclas4j.segment;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
+
 import org.ictclas4j.bean.Atom;
 import org.ictclas4j.bean.Dictionary;
 import org.ictclas4j.bean.MidResult;
 import org.ictclas4j.bean.SegNode;
 import org.ictclas4j.bean.SegResult;
 import org.ictclas4j.bean.Sentence;
+import org.ictclas4j.bean.TxtDictionary;
 import org.ictclas4j.utility.POSTag;
 import org.ictclas4j.utility.Utility;
 
@@ -25,9 +24,12 @@ public class SegTag {
 
 	public SegTag(int segPathCount) {
 		this.segPathCount = segPathCount;
+//		coreDict = new TxtDictionary("dic/coreDict.dct");
+//		bigramDict = new TxtDictionary("dic/bigramDict.dct");
+		
 		coreDict = new Dictionary("data/coreDict.dct");
-
 		bigramDict = new Dictionary("data/bigramDict.dct");
+		
 		personTagger = new PosTagger(Utility.TAG_TYPE.TT_PERSON, "data/nr", coreDict);
 		transPersonTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "data/tr", coreDict);
 		placeTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "data/ns", coreDict);
@@ -206,11 +208,15 @@ public class SegTag {
 	}
 	
 	public void outputDic(){
-		coreDict.outputChars("coreDict.txt");
-		bigramDict.outputChars("bigramDict.txt");
-		personTagger.getUnknownDict().outputChars("nr.txt");
-		transPersonTagger.getUnknownDict().outputChars("tr.txt");
-		placeTagger.getUnknownDict().outputChars("ns.txt");
+		coreDict.outputChars("dic/coreDict.dct");
+		bigramDict.outputChars("dic/bigramDict.dct");
+		personTagger.getUnknownDict().outputChars("dic/nr.dct");
+		transPersonTagger.getUnknownDict().outputChars("dic/tr.dct");
+		placeTagger.getUnknownDict().outputChars("dic/ns.dct");
+		personTagger.getContextStat().outputChars("dic/nr.ctx");
+		transPersonTagger.getContextStat().outputChars("dic/tr.ctx");
+		placeTagger.getContextStat().outputChars("dic/ns.ctx");
+		lexTagger.getContextStat().outputChars("dic/lexical.ctx");
 	}
 	
 	private static void println2Err(String str) {

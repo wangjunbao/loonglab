@@ -1,21 +1,27 @@
 package org.ictclas4j.bean;
 
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-//import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.ictclas4j.utility.GFCommon;
 import org.ictclas4j.utility.Utility;
 
 
 public class ContextStat {
-	private int tableLen;
+	
+	static Log log = LogFactory.getLog(ContextStat.class);
+	
+	protected int tableLen;
 
-	private int[] symbolTable;
+	protected int[] symbolTable;
 
 	private ArrayList<TagContext> tcList;
 
@@ -167,4 +173,54 @@ public class ContextStat {
 		return result;
 	}
 
+	
+	public void outputChars(String fileName){
+		try {
+			BufferedOutputStream out = new BufferedOutputStream(
+					new FileOutputStream(fileName), 1024 * 16);
+			
+			out.write((""+tableLen).getBytes());
+			out.write('\r');
+			out.write('\n');
+			
+			for (int i = 0; i < symbolTable.length; i++) {
+				out.write((""+symbolTable[i]).getBytes());
+				out.write(" ".getBytes());
+				
+			}
+			
+			out.write('\r');
+			out.write('\n');
+			
+			for (TagContext tc : tcList) {
+				out.write((tc.getKey()+"").getBytes());
+				out.write('\r');
+				out.write('\n');
+				out.write((tc.getTotalFreq()+"").getBytes());
+				out.write('\r');
+				out.write('\n');
+				for (int i = 0; i < tc.getTagFreq().length; i++) {
+					out.write((tc.getTagFreq()[i]+" ").getBytes());
+				}
+				out.write('\r');
+				out.write('\n');
+				for (int i = 0; i < tc.getContextArray().length; i++) {
+					for (int j = 0; j < tc.getContextArray()[i].length; j++) {
+						out.write((tc.getContextArray()[i][j]+" ").getBytes());
+					}
+					
+					out.write('\r');
+					out.write('\n');
+				}
+				out.write('\r');
+				out.write('\n');
+			}
+
+			
+			out.close();
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+			
+		}
+	}
 }

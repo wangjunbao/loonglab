@@ -647,7 +647,10 @@ public class Dictionary {
 			
 			int i=0;
 			for (WordTable wt : wts) {
-				if(wt.getWords()!=null)
+				out.write((wt.getCount()+"").getBytes());
+				out.write('\r');
+				out.write('\n');
+				if(wt.getCount()>0)
 					for (WordItem wi : wt.getWords()) {
 						String wordStr=Utility.getGB(i)+wi.getWord()+" "+wi.getFreq()+" "+wi.getHandle();
 						out.write(wordStr.getBytes("GBK"));
