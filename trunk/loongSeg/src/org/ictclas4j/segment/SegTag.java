@@ -24,16 +24,20 @@ public class SegTag {
 
 	public SegTag(int segPathCount) {
 		this.segPathCount = segPathCount;
-//		coreDict = new TxtDictionary("dic/coreDict.dct");
-//		bigramDict = new TxtDictionary("dic/bigramDict.dct");
+		coreDict = new TxtDictionary("dic/coreDict.dct");
+		bigramDict = new TxtDictionary("dic/bigramDict.dct");
 		
-		coreDict = new Dictionary("data/coreDict.dct");
-		bigramDict = new Dictionary("data/bigramDict.dct");
+//		coreDict = new Dictionary("data/coreDict.dct");
+//		bigramDict = new Dictionary("data/bigramDict.dct");
 		
-		personTagger = new PosTagger(Utility.TAG_TYPE.TT_PERSON, "data/nr", coreDict);
-		transPersonTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "data/tr", coreDict);
-		placeTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "data/ns", coreDict);
-		lexTagger = new PosTagger(Utility.TAG_TYPE.TT_NORMAL, "data/lexical", coreDict);
+//		personTagger = new PosTagger(Utility.TAG_TYPE.TT_PERSON, "data/nr", coreDict);
+//		transPersonTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "data/tr", coreDict);
+//		placeTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "data/ns", coreDict);
+//		lexTagger = new PosTagger(Utility.TAG_TYPE.TT_NORMAL, "data/lexical", coreDict);
+		personTagger = new PosTagger(Utility.TAG_TYPE.TT_PERSON, "dic/nr", coreDict);
+		transPersonTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "dic/tr", coreDict);
+		placeTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "dic/ns", coreDict);
+		lexTagger = new PosTagger(Utility.TAG_TYPE.TT_NORMAL, "dic/lexical", coreDict);
 	}
 
 	public SegResult split(String src) {

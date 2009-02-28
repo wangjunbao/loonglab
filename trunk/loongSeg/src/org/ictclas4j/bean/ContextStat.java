@@ -23,7 +23,7 @@ public class ContextStat {
 
 	protected int[] symbolTable;
 
-	private ArrayList<TagContext> tcList;
+	protected ArrayList<TagContext> tcList;
 
 	//static Logger logger = Logger.getLogger(ContextStat.class);
 

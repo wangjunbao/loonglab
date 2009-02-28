@@ -17,6 +17,8 @@ import org.ictclas4j.utility.Utility;
  *
  */
 public class TxtContextStat extends ContextStat{
+	
+	
 
 	@Override
 	public boolean load(String fileName, boolean isReset) {
@@ -47,6 +49,22 @@ public class TxtContextStat extends ContextStat{
 			for (int i = 0; i < tagFreq.length; i++) {
 				tagFreq[i]=new Integer(freqArray[i]);
 			}
+			
+						
+			// 读取上下文数组
+			int[][] contextArray = new int[tableLen][tableLen];
+			for (int i = 0; i < tableLen; i++) {
+				String contextStr=br.readLine();
+				//System.out.println(contextStr);
+				String[] contextStrArray=contextStr.split(" ");
+				for (int j = 0; j < contextStrArray.length; j++) {
+					contextArray[i][j]=new Integer(contextStrArray[j]);
+				}
+			}
+
+			tc.setTagFreq(tagFreq);
+			tc.setContextArray(contextArray);
+			tcList.add(tc);
 			
 			
 			
