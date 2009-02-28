@@ -6,8 +6,9 @@ import org.ictclas4j.bean.ContextStat;
 import org.ictclas4j.bean.Dictionary;
 import org.ictclas4j.bean.POS;
 import org.ictclas4j.bean.SegNode;
+import org.ictclas4j.bean.TxtContextStat;
+import org.ictclas4j.bean.TxtDictionary;
 import org.ictclas4j.bean.WordItem;
-//import org.ictclas4j.utility.DebugUtil;
 import org.ictclas4j.utility.POSTag;
 import org.ictclas4j.utility.Utility;
 import org.ictclas4j.utility.Utility.TAG_TYPE;
@@ -35,10 +36,13 @@ public class PosTagger {
 			if (type == Utility.TAG_TYPE.TT_NORMAL)
 				this.unknownDict = coreDict;
 			else {
-				unknownDict = new Dictionary();
+				//unknownDict = new Dictionary();
+				unknownDict = new TxtDictionary();
 				unknownDict.load(fileName + ".dct");
 			}
-			context = new ContextStat();
+			//用文本形式的词典
+			//context = new ContextStat();
+			context = new TxtContextStat();
 			context.load(fileName + ".ctx");
 			this.tagType = type;
 
