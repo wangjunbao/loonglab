@@ -693,5 +693,9 @@ public class Dictionary {
 	public int getPOSValue(byte[] sPOS) {
 		return 0;
 	}
+	
+	public void loadUserDict(String fileName){
+		
+	}
 
 }

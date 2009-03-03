@@ -2,12 +2,12 @@ package org.ictclas4j.segment;
 
 import java.util.ArrayList;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.ictclas4j.bean.ContextStat;
 import org.ictclas4j.bean.Dictionary;
 import org.ictclas4j.bean.POS;
 import org.ictclas4j.bean.SegNode;
-import org.ictclas4j.bean.TxtContextStat;
-import org.ictclas4j.bean.TxtDictionary;
 import org.ictclas4j.bean.WordItem;
 import org.ictclas4j.utility.POSTag;
 import org.ictclas4j.utility.Utility;
@@ -22,13 +22,23 @@ import org.ictclas4j.utility.Utility.TAG_TYPE;
  * 
  */
 public class PosTagger {
-	private Dictionary coreDict;
-	private Dictionary unknownDict;
-	private ContextStat context;
+	
+	static Log log = LogFactory.getLog(PosTagger.class);
+	
+	protected Dictionary coreDict;
+	protected Dictionary unknownDict;
+	protected ContextStat context;
 
-	private int pos;
-	private TAG_TYPE tagType;
+	protected int pos;
+	protected TAG_TYPE tagType;
 	String unknownFlags;
+	
+	
+
+	public PosTagger() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	public PosTagger(TAG_TYPE type, String fileName, Dictionary coreDict) {
 		if (fileName != null) {
@@ -36,13 +46,10 @@ public class PosTagger {
 			if (type == Utility.TAG_TYPE.TT_NORMAL)
 				this.unknownDict = coreDict;
 			else {
-				//unknownDict = new Dictionary();
-				unknownDict = new TxtDictionary();
+				unknownDict = new Dictionary();
 				unknownDict.load(fileName + ".dct");
 			}
-			//用文本形式的词典
-			//context = new ContextStat();
-			context = new TxtContextStat();
+			context = new ContextStat();
 			context.load(fileName + ".ctx");
 			this.tagType = type;
 
@@ -483,6 +490,7 @@ public class PosTagger {
 			boolean bMatched = false;
 
 			sPos = word2pattern(sns);
+			log.debug("sPos is "+sPos);
 			while (sPos != null && j < sPos.length()) {
 				bMatched = false;
 				for (k = 0; !bMatched && patterns[k].length() > 0; k++) {
