@@ -13,8 +13,8 @@ import org.ictclas4j.utility.POSTag;
 import org.ictclas4j.utility.Utility;
 
 public class SegTag {
-	private Dictionary coreDict;
-	private Dictionary bigramDict;
+	private TxtDictionary coreDict;
+	private TxtDictionary bigramDict;
 	private PosTagger personTagger;
 	private PosTagger transPersonTagger;
 	private PosTagger placeTagger;
@@ -26,18 +26,19 @@ public class SegTag {
 		this.segPathCount = segPathCount;
 		coreDict = new TxtDictionary("dic/coreDict.dct");
 		bigramDict = new TxtDictionary("dic/bigramDict.dct");
+		coreDict.loadUserDict("dic/userDict.dct");
 		
 //		coreDict = new Dictionary("data/coreDict.dct");
 //		bigramDict = new Dictionary("data/bigramDict.dct");
 		
-//		personTagger = new PosTagger(Utility.TAG_TYPE.TT_PERSON, "data/nr", coreDict);
-//		transPersonTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "data/tr", coreDict);
-//		placeTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "data/ns", coreDict);
-//		lexTagger = new PosTagger(Utility.TAG_TYPE.TT_NORMAL, "data/lexical", coreDict);
-		personTagger = new PosTagger(Utility.TAG_TYPE.TT_PERSON, "dic/nr", coreDict);
-		transPersonTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "dic/tr", coreDict);
-		placeTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "dic/ns", coreDict);
-		lexTagger = new PosTagger(Utility.TAG_TYPE.TT_NORMAL, "dic/lexical", coreDict);
+		personTagger = new PosTagger(Utility.TAG_TYPE.TT_PERSON, "data/nr", coreDict);
+		transPersonTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "data/tr", coreDict);
+		placeTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "data/ns", coreDict);
+		lexTagger = new PosTagger(Utility.TAG_TYPE.TT_NORMAL, "data/lexical", coreDict);
+//		personTagger = new TxtPosTagger(Utility.TAG_TYPE.TT_PERSON, "dic/nr", coreDict);
+//		transPersonTagger = new TxtPosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "dic/tr", coreDict);
+//		placeTagger = new TxtPosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "dic/ns", coreDict);
+//		lexTagger = new TxtPosTagger(Utility.TAG_TYPE.TT_NORMAL, "dic/lexical", coreDict);
 	}
 
 	public SegResult split(String src) {
