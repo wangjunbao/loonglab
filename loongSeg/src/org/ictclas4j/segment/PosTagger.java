@@ -157,9 +157,11 @@ public class PosTagger {
 					}
 
 					// 从unknownDict词典库中获取当前的所有词性
+					//log.debug("curWord is "+curWord);
 					ArrayList<WordItem> wis = unknownDict.getHandle(curWord);
 					for (int j = 0; wis != null && j < wis.size(); j++) {
 						WordItem wi = wis.get(j);
+						//log.debug("wi is "+wi);
 						int tag = wi.getHandle();
 						double freq = -Math.log((1 + wi.getFreq()));
 						freq += Math.log((context.getFreq(0, wi.getHandle()) + wis.size() + 1));
@@ -248,6 +250,8 @@ public class PosTagger {
 		ArrayList<POS> allPos = null;
 		if (sns != null && context != null) {
 			for (int i = 0; i < sns.size(); i++) {
+				//log.debug("nr==========word is "+sns.get(i).getWord());
+
 				if (i == 0) {
 					int pos = tagType != Utility.TAG_TYPE.TT_NORMAL ? 100 : 0;
 					prevAllPos = new ArrayList<POS>();
@@ -263,12 +267,19 @@ public class PosTagger {
 					for (int k = 0;prevAllPos!=null &&  k < prevAllPos.size(); k++) {
 						POS prevPos = prevAllPos.get(k);
 						double temp = context.getPossibility(0, prevPos.getTag(), pos.getTag());
+						
+						//log.debug("nr==========="+(-Math.log(temp))+"("+prevPos.getTag()+"),("+pos.getTag()+")");
+
 						temp = -Math.log(temp) + prevPos.getFreq();
 						if (temp < minFreq) {
 							minFreq = temp;
 							minPrev = k;
 						}
+						
+						
 					}
+					
+					//log.debug("minFreq is "+minFreq+",minPrev is "+minPrev);
 
 					pos.setPrev(minPrev);
 					pos.setFreq(pos.getFreq() + minFreq);
