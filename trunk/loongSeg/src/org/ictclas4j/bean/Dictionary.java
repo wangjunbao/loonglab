@@ -370,6 +370,7 @@ public class Dictionary {
 		if (word != null) {
 			result = new ArrayList<WordItem>();
 			Preword pw = preProcessing(word);
+			//log.debug("pw.index is "+pw.getIndex());
 			if (pw != null && pw.getWord() != null) {
 				int found = findInOriginalTable(pw.getIndex(), pw.getRes(), -1);
 				if (found >= 0) {

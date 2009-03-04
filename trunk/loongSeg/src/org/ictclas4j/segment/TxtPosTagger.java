@@ -22,8 +22,11 @@ public class TxtPosTagger extends PosTagger {
 				unknownDict.load(fileName + ".dct");
 				
 				File userFile=new File(fileName+".udt");
-				if(userFile.exists())
+				if(userFile.exists()){
+					//log.debug("load "+fileName+".udt...");
 					unknownDict.loadUserDict(fileName+".udt");
+				}
+					
 			}
 			//用文本形式的词典
 			//context = new ContextStat();

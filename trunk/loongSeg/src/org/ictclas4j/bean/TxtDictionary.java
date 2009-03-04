@@ -77,11 +77,13 @@ public class TxtDictionary extends Dictionary {
 	
 	@Override
 	public void loadUserDict(String filename){
+		//log.debug("enter "+filename+" loadUserDict...");
 		try {
 			BufferedReader br=new BufferedReader(new InputStreamReader(new FileInputStream(filename),"GBK"));
 			
 			String wordStr;
 			while((wordStr=br.readLine())!=null){
+				//log.debug(wordStr);
 				String[] wordArray=wordStr.split(" ");
 				String wordHead=wordArray[0].substring(0,1);
 				String wordTail=wordArray[0].substring(1);
@@ -93,6 +95,9 @@ public class TxtDictionary extends Dictionary {
 					}
 					WordItem wi=new WordItem(wordTail,wordTail.length()+1,new Integer(wordArray[2]),new Integer(wordArray[1]));
 					wt.getWords().add(wi);
+					wt.setCount(wt.getCount()+1);
+					
+					//log.debug(wi);
 					
 					Collections.sort(wt.getWords(), new Comparator<WordItem>(){
 

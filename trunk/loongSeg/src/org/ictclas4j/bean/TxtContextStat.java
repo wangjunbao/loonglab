@@ -59,6 +59,8 @@ public class TxtContextStat extends ContextStat{
 				String[] contextStrArray=contextStr.split(" ");
 				for (int j = 0; j < contextStrArray.length; j++) {
 					contextArray[i][j]=new Integer(contextStrArray[j]);
+					//log.debug(fileName+":contextArray["+i+"]["+j+"]="+contextArray[i][j]);
+					
 				}
 			}
 
