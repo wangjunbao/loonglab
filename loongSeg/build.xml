@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="GBK"?>
+
+<project name="ebnew" basedir="." default="">
+	<property file="build.properties"/>
+	<property environment="env"/>
+	<tstamp>
+		<format property="today" pattern="yyyy-MM-dd HH:mm"/>
+	</tstamp>
+
+	<!-- ========================================================= -->
+	<!-- can overwrite by build.properties -->
+	<!-- ========================================================= -->
+	<property name="project.name" value="loongSeg"/>
+	<property name="project.title" value="loongSeg"/>
+	<property name="project.version" value="0.9"/>
+	<property name="debug" value="true"/>
+
+
+	<!-- ========================================================= -->
+	<!-- Setting for directory properties -->
+	<!-- ========================================================= -->
+	<property name="lib.dir" location="${basedir}/lib"/>
+	<property name="build.dir" location="${basedir}/build"/>
+	<property name="dist.dir" location="${basedir}/dist"/>
+	<property name="src.dir" location="${basedir}/src"/>
+	<property name="build.class.dir" location="${build.dir}/classes"/>
+
+	<!-- ========================================================= -->
+	<!-- Setting for path -->
+	<!-- ========================================================= -->
+	<path id="classpath">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${lib.dir}/junit">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+	
+    <!-- ========================================================= -->
+	<!-- target segment -->
+	<!-- ========================================================= -->
+
+	<target name="init">
+		<mkdir dir="${build.dir}/classes"/>	
+		<mkdir dir="${dist.dir}"/>
+	</target>
+	<target name="compile" depends="init">
+		<javac encoding="GBK" classpathref="classpath" srcdir="src" 
+											destdir="${build.dir}/classes" target="1.5" debug="${debug}" verbose="false"
+											deprecation="false" optimize="false" failonerror="true"/>
+	</target>
+
+
+	
+	
+	<target name="build" depends="compile">	
+		<jar destfile="${dist.dir}/${project.name}-${DSTAMP}.jar" basedir="${build.dir}/classes"/>		
+	</target>
+
+	
+	<target name="deploy" depends="build">
+		<mkdir dir="${nlp.dir}/ictclas4j/dic"/>	
+		<copy todir="${nlp.dir}/ictclas4j/dic">
+			<fileset dir="dic"></fileset>
+		</copy>
+		<copy file="${dist.dir}/${project.name}-${DSTAMP}.jar" tofile="${nlp.dir}/lib/${project.name}.jar" overwrite="true"/>			
+	</target>
+	
+	<target name="clean">
+		<delete dir="${build.dir}/classes"/>
+		<delete dir="${dist.dir}"/>
+	</target>
+	
+
+
+</project>

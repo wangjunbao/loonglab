@@ -29,35 +29,48 @@ public class ViterbiDemo {
 
 	public MidResult forward(String[] obs){
 		Map<String, MidResult> T=new HashMap<String, MidResult>();
-		for (String state : states) {
-			T.put(state, new MidResult(start_probability[getStateIndex(state)],state,start_probability[getStateIndex(state)]));
-		}
+//		for (String state : states) {
+//			T.put(state, new MidResult(start_probability[getStateIndex(state)],state,start_probability[getStateIndex(state)]));
+//		}
 		
+		int i=0;
 		for (String output : obs) {
 			Map<String, MidResult> U=new HashMap<String, MidResult>();
 			for (String nextState : states) {
 				double total=0;
 				String argmax="";
 				double valmax=0;
-				for (String sourceState : states) {
-					MidResult mr=T.get(sourceState);
-					double p=emission_probability[getStateIndex(sourceState)][getObIndex(output)]
-					                                                        *transition_probability[getStateIndex(sourceState)][getStateIndex(nextState)];
-					mr.prob *=p;
-					mr.vProb *=p;
-					total=total+mr.prob;
-					
-					if(mr.vProb>valmax){
-						argmax=mr.vPath+","+nextState;
-						valmax=mr.vProb;
-					}
-
+				if(i==0){
+					double p=emission_probability[getStateIndex(nextState)][getObIndex(output)]*start_probability[getStateIndex(nextState)];
+					total=p;
+					argmax=nextState;
+					valmax=p;
 				}
+				else{
+					for (String sourceState : states) {
+						MidResult mr=T.get(sourceState);
+						double p=emission_probability[getStateIndex(nextState)][getObIndex(output)]
+						                                                        *transition_probability[getStateIndex(sourceState)][getStateIndex(nextState)];
+						mr.prob *=p;
+						mr.vProb *=p;
+						total=total+mr.prob;
+						
+						if(mr.vProb>valmax){
+							argmax=mr.vPath+","+nextState;
+							valmax=mr.vProb;
+						}
+
+					}
+				}
+				
 				
 				U.put(nextState, new MidResult(total,argmax,valmax));
 			}
-			
+						
 			T=U;
+			
+			i++;
+
 		}
 		
 		   
