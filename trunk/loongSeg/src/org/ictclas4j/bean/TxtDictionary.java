@@ -57,7 +57,8 @@ public class TxtDictionary extends Dictionary {
 						String[] words=wordStr.split(" ");
 						String word=words[0].substring(1);
 						WordItem wi=new WordItem(word,word.length()+1,new Integer(words[2]),new Integer(words[1]));
-						//System.out.println(wi);
+//						if(wordStr.startsWith("Ï²»¶"))
+//							System.out.println(wi);
 						wis[j]=wi;
 					}
 					

@@ -1,5 +1,6 @@
 package org.ictclas4j.segment;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import org.apache.commons.logging.Log;
@@ -501,7 +502,7 @@ public class PosTagger {
 			boolean bMatched = false;
 
 			sPos = word2pattern(sns);
-			log.debug("sPos is "+sPos);
+			//log.debug("sPos is "+sPos);
 			while (sPos != null && j < sPos.length()) {
 				bMatched = false;
 				for (k = 0; !bMatched && patterns[k].length() > 0; k++) {
@@ -655,8 +656,13 @@ public class PosTagger {
 		double snp = 0;
 
 		if (sName != null) {
-			if (sName.getBytes().length != 4)
-				return false;
+			try {
+				if (sName.getBytes("GBK").length != 4)
+					return false;
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			firstChar = sName.substring(0, 1);
 			secondChar = sName.substring(1);

@@ -1,5 +1,6 @@
 package org.ictclas4j.bean;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
@@ -50,7 +51,11 @@ public class SegNode implements Cloneable {
 	}
 
 	public int getLen() {
-		return srcWord != null ? srcWord.getBytes().length : -1;
+		try {
+			return srcWord != null ? srcWord.getBytes("GBK").length : -1;
+		} catch (UnsupportedEncodingException e) {
+			return 0;
+		}
 	}
 
 	public int getPos() {
