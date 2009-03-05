@@ -2,8 +2,9 @@ package org.ictclas4j.segment;
 
 import java.util.ArrayList;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.ictclas4j.bean.Atom;
-import org.ictclas4j.bean.Dictionary;
 import org.ictclas4j.bean.MidResult;
 import org.ictclas4j.bean.SegNode;
 import org.ictclas4j.bean.SegResult;
@@ -13,6 +14,9 @@ import org.ictclas4j.utility.POSTag;
 import org.ictclas4j.utility.Utility;
 
 public class SegTag {
+	
+	static Log log = LogFactory.getLog(SegTag.class);
+	
 	private TxtDictionary coreDict;
 	private TxtDictionary bigramDict;
 	private PosTagger personTagger;
@@ -20,26 +24,29 @@ public class SegTag {
 	private PosTagger placeTagger;
 	private PosTagger lexTagger;
 
-	private int segPathCount = 1;// 分词路径的数目
+	private int segPathCount = 1;// 分词路径的数目（N-最短路径中的N）
 
 	public SegTag(int segPathCount) {
 		this.segPathCount = segPathCount;
-		coreDict = new TxtDictionary("dic/coreDict.dct");
-		bigramDict = new TxtDictionary("dic/bigramDict.dct");
-		coreDict.loadUserDict("dic/userDict.dct");
-		
-//		coreDict = new Dictionary("data/coreDict.dct");
-//		bigramDict = new Dictionary("data/bigramDict.dct");
-		
-//		personTagger = new PosTagger(Utility.TAG_TYPE.TT_PERSON, "data/nr", coreDict);
-//		transPersonTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "data/tr", coreDict);
-//		placeTagger = new PosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "data/ns", coreDict);
-//		lexTagger = new PosTagger(Utility.TAG_TYPE.TT_NORMAL, "data/lexical", coreDict);
-		personTagger = new TxtPosTagger(Utility.TAG_TYPE.TT_PERSON, "dic/nr", coreDict);
-		transPersonTagger = new TxtPosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "dic/tr", coreDict);
-		placeTagger = new TxtPosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, "dic/ns", coreDict);
-		lexTagger = new TxtPosTagger(Utility.TAG_TYPE.TT_NORMAL, "dic/lexical", coreDict);
+		initDictionary("dic");
 	}
+	
+	public SegTag(String dicDir){
+		initDictionary(dicDir);
+	}
+	
+	public void initDictionary(String dicDir){
+		coreDict = new TxtDictionary(dicDir+"/coreDict.dct");
+		bigramDict = new TxtDictionary(dicDir+"/bigramDict.dct");
+		coreDict.loadUserDict(dicDir+"/userDict.dct");
+		
+		personTagger = new TxtPosTagger(Utility.TAG_TYPE.TT_PERSON, dicDir+"/nr", coreDict);
+		transPersonTagger = new TxtPosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, dicDir+"/tr", coreDict);
+		placeTagger = new TxtPosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, dicDir+"/ns", coreDict);
+		lexTagger = new TxtPosTagger(Utility.TAG_TYPE.TT_NORMAL, dicDir+"/lexical", coreDict);
+	}
+	
+	
 
 	public SegResult split(String src) {
 		SegResult sr = new SegResult(src);// 分词结果
@@ -66,14 +73,25 @@ public class SegTag {
 					println2Err("[atom time]:"+(System.currentTimeMillis()-start));
 					start=System.currentTimeMillis();
 					
+					
+					
 					// 生成分词图表,先进行初步分词，然后进行优化，最后进行词性标记
 					SegGraph segGraph = GraphGenerate.generate(atoms, coreDict);
 					mr.setSegGraph(segGraph.getSnList());
+					
+//					log.debug("===segGraph===");
+//					int ii=0;
+//					for (SegNode node : segGraph.getSnList()) {
+//						log.debug((ii++)+","+node);
+//					}
+					
 					// 生成二叉分词图表
 					SegGraph biSegGraph = GraphGenerate.biGenerate(segGraph, coreDict, bigramDict);
 					mr.setBiSegGraph(biSegGraph.getSnList());
 					println2Err("[graph time]:"+(System.currentTimeMillis()-start));
 					start=System.currentTimeMillis();
+					
+					
 					
 					// 求N最短路径
 					NShortPath nsp = new NShortPath(biSegGraph, segPathCount);
@@ -81,6 +99,14 @@ public class SegTag {
 					mr.setBipath(bipath);
 					println2Err("[NSP time]:"+(System.currentTimeMillis()-start));
 					start=System.currentTimeMillis();
+					
+//					log.debug("===nsp===");
+//					for (ArrayList<Integer> arrayList : bipath) {
+//						for (Integer integer : arrayList) {
+//							log.debug(segGraph.getSnList().get(integer));
+//						}
+//						log.debug("=====");
+//					}
 					
 					for (ArrayList<Integer> onePath : bipath) {
 						// 得到初次分词路径

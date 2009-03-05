@@ -1,5 +1,6 @@
 package org.ictclas4j.bean;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import org.ictclas4j.utility.Utility;
@@ -200,7 +201,12 @@ public class Span {
 			if (tagType == Utility.TAG_TYPE.TT_NORMAL || !unknownDict.isExist(word, 44)) {
 				// current word
 				m_sWords[i] = word;// store
-				m_nWordPosition[i + 1] = m_nWordPosition[i] + m_sWords[i].getBytes().length;
+				try {
+					m_nWordPosition[i + 1] = m_nWordPosition[i] + m_sWords[i].getBytes("GBK").length;
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}  
 			
 			// Record the position of current word
@@ -434,7 +440,7 @@ public class Span {
 
 	private int guessPOS(int index) {
 		int j = 0, i = index, charType;
-		int nLen;
+		int nLen=0;
 		switch (tagType) {
 		case TT_NORMAL:
 			break;
@@ -446,7 +452,12 @@ public class Span {
 			} else {
 				m_nTags[i][j] = 0;
 				m_dFrequency[i][j++] = (double) 1 / (double) (context.getFreq(0, 0) + 1);
-				nLen = m_sWords[index].getBytes().length;
+				try {
+					nLen = m_sWords[index].getBytes("GBK").length;
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				if (nLen >= 4) {
 					m_nTags[i][j] = 0;
 					m_dFrequency[i][j++] = (double) 1 / (double) (context.getFreq(0, 0) + 1);

@@ -203,25 +203,30 @@ public class Utility {
 	public static int charType(String str) {
 
 		if (str != null && str.length() > 0) {
-			byte[] b = str.getBytes();
-			byte b1 = b[0];
-			byte b2 = b.length > 1 ? b[1] : 0;
-			if (getUnsigned(b1) < 128) {
-				if ("\"!,.?()[]{}+=".indexOf((char) b1) != -1)
+			try {
+				byte[] b = str.getBytes("GBK");
+				byte b1 = b[0];
+				byte b2 = b.length > 1 ? b[1] : 0;
+				if (getUnsigned(b1) < 128) {
+					if ("\"!,.?()[]{}+=".indexOf((char) b1) != -1)
+						return CT_DELIMITER;
+					return CT_SINGLE;
+				} else if (getUnsigned(b1) == 162)
+					return CT_INDEX;
+				else if (getUnsigned(b1) == 163 && getUnsigned(b2) > 175 && getUnsigned(b2) < 186)
+					return CT_NUM;
+				else if (getUnsigned(b1) == 163
+						&& (getUnsigned(b2) >= 193 && getUnsigned(b2) <= 218 || getUnsigned(b2) >= 225
+								&& getUnsigned(b2) <= 250))
+					return CT_LETTER;
+				else if (getUnsigned(b1) == 161 || getUnsigned(b1) == 163)
 					return CT_DELIMITER;
-				return CT_SINGLE;
-			} else if (getUnsigned(b1) == 162)
-				return CT_INDEX;
-			else if (getUnsigned(b1) == 163 && getUnsigned(b2) > 175 && getUnsigned(b2) < 186)
-				return CT_NUM;
-			else if (getUnsigned(b1) == 163
-					&& (getUnsigned(b2) >= 193 && getUnsigned(b2) <= 218 || getUnsigned(b2) >= 225
-							&& getUnsigned(b2) <= 250))
-				return CT_LETTER;
-			else if (getUnsigned(b1) == 161 || getUnsigned(b1) == 163)
-				return CT_DELIMITER;
-			else if (getUnsigned(b1) >= 176 && getUnsigned(b1) <= 247)
-				return CT_CHINESE;
+				else if (getUnsigned(b1) >= 176 && getUnsigned(b1) <= 247)
+					return CT_CHINESE;
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 		}
 		return CT_OTHER;
@@ -268,11 +273,16 @@ public class Utility {
 
 			String temp = str + " ";
 			for (int i = 0; i < str.length(); i++) {
-				byte[] b = temp.substring(i, i + 1).getBytes();
-				if (b.length == 2) {
-					if (!(getUnsigned(b[0]) < 248 && getUnsigned(b[0]) > 175)
-							|| !(getUnsigned(b[0]) < 253 && getUnsigned(b[0]) > 160))
-						return false;
+				try {
+					byte[] b = temp.substring(i, i + 1).getBytes("GBK");
+					if (b.length == 2) {
+						if (!(getUnsigned(b[0]) < 248 && getUnsigned(b[0]) > 175)
+								|| !(getUnsigned(b[0]) < 253 && getUnsigned(b[0]) > 160))
+							return false;
+					}
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 
@@ -326,9 +336,14 @@ public class Utility {
 		if (str != null) {
 			int len = str.length();
 			int i = 0;
-			byte[] b = str.getBytes();
-			while (i < len && b[i] < 128) {
-				i++;
+			try {
+				byte[] b = str.getBytes("GBK");
+				while (i < len && b[i] < 128) {
+					i++;
+				}
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			if (i < len)
 				return false;
@@ -454,11 +469,16 @@ public class Utility {
 
 		if (str != null) {
 			int nLen = str.length();
-			byte[] b = str.getBytes();
-			while (i < nLen - 1
-					&& getUnsigned(b[i]) == 163
-					&& ((getUnsigned(b[i + 1]) >= 193 && getUnsigned(b[i + 1]) <= 218) || (getUnsigned(b[i + 1]) >= 225 && getUnsigned(b[i + 1]) <= 250))) {
-				i += 2;
+			try {
+				byte[] b = str.getBytes("GBK");
+				while (i < nLen - 1
+						&& getUnsigned(b[i]) == 163
+						&& ((getUnsigned(b[i + 1]) >= 193 && getUnsigned(b[i + 1]) <= 218) || (getUnsigned(b[i + 1]) >= 225 && getUnsigned(b[i + 1]) <= 250))) {
+					i += 2;
+				}
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			if (i < nLen)
 				return false;
@@ -697,38 +717,43 @@ public class Utility {
 	}
 
 	public static boolean PostfixSplit(byte[] sWord, byte[] sWordRet, byte[] sPostfix) {
-		byte[] sSinglePostfix = POSTFIX_SINGLE.getBytes();
-		byte[][] sMultiPostfix = new byte[POSTFIX_MUTIPLE.length][9];
-		for (int i = 0; i < sMultiPostfix.length; i++)
-			sMultiPostfix[i] = POSTFIX_MUTIPLE[i].getBytes();
-		int nPostfixLen = 0, nWordLen = sWord.length;
-		int i = 0;
+		try {
+			byte[] sSinglePostfix = POSTFIX_SINGLE.getBytes("GBK");
+			byte[][] sMultiPostfix = new byte[POSTFIX_MUTIPLE.length][9];
+			for (int i = 0; i < sMultiPostfix.length; i++)
+				sMultiPostfix[i] = POSTFIX_MUTIPLE[i].getBytes("GBK");
+			int nPostfixLen = 0, nWordLen = sWord.length;
+			int i = 0;
 
-		while (sMultiPostfix[i][0] != 0
-				&& strncmp(GFCommon.bytesCopy(sWord, nWordLen - sMultiPostfix[i].length, sWord.length - nWordLen
-						+ sMultiPostfix[i].length), 0, sMultiPostfix[i], sMultiPostfix[i].length) == false) {// Try
-			// to
-			// get
-			// the
-			// postfix of an
-			// address
-			i++;
+			while (sMultiPostfix[i][0] != 0
+					&& strncmp(GFCommon.bytesCopy(sWord, nWordLen - sMultiPostfix[i].length, sWord.length - nWordLen
+							+ sMultiPostfix[i].length), 0, sMultiPostfix[i], sMultiPostfix[i].length) == false) {// Try
+				// to
+				// get
+				// the
+				// postfix of an
+				// address
+				i++;
+			}
+			GFCommon.bytesCopy(sPostfix, sMultiPostfix[i], 0, sMultiPostfix.length);
+			nPostfixLen = sMultiPostfix[i].length;// Get the length of place
+			// postfix
+
+			if (nPostfixLen == 0) {
+				sPostfix[2] = 0;
+				strncpy(sPostfix, GFCommon.bytesCopy(sWord, nWordLen - 2, 2), 2);
+				if (CC_Find(sSinglePostfix, sPostfix))
+					nPostfixLen = 2;
+			}
+
+			strncpy(sWordRet, sWord, nWordLen - nPostfixLen);
+			sWordRet[nWordLen - nPostfixLen] = 0;// Get the place name which have
+			// erasing the postfix
+			sPostfix[nPostfixLen] = 0;
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		GFCommon.bytesCopy(sPostfix, sMultiPostfix[i], 0, sMultiPostfix.length);
-		nPostfixLen = sMultiPostfix[i].length;// Get the length of place
-		// postfix
-
-		if (nPostfixLen == 0) {
-			sPostfix[2] = 0;
-			strncpy(sPostfix, GFCommon.bytesCopy(sWord, nWordLen - 2, 2), 2);
-			if (CC_Find(sSinglePostfix, sPostfix))
-				nPostfixLen = 2;
-		}
-
-		strncpy(sWordRet, sWord, nWordLen - nPostfixLen);
-		sWordRet[nWordLen - nPostfixLen] = 0;// Get the place name which have
-		// erasing the postfix
-		sPostfix[nPostfixLen] = 0;
 		return true;
 	}
 
@@ -819,9 +844,14 @@ public class Utility {
 	 */
 	public static int CC_ID(String str) {
 		int result = -1;
-		if (str != null && str.length() > 0) {
-			byte[] b = str.getBytes();
-			result = (getUnsigned(b[0]) - 176) * 94 + (getUnsigned(b[1]) - 161);
+		try {
+			if (str != null && str.length() > 0) {
+				byte[] b = str.getBytes("GBK");
+				result = (getUnsigned(b[0]) - 176) * 94 + (getUnsigned(b[1]) - 161);
+			}
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -903,10 +933,17 @@ public class Utility {
 	}
 
 	public static boolean isSingle(String s) {
-		if (s != null && s.getBytes().length == 1)
-			return true;
-		else
-			return false;
+		try {
+			if (s != null && s.getBytes("GBK").length == 1)
+				return true;
+			else
+				return false;
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return false;
 	}
 
 	public static int[] removeInvalid(int[] src) {
@@ -992,8 +1029,13 @@ public class Utility {
 			str += " ";
 			for (int i = 0; i < str.length(); i++) {
 				String s = str.substring(i, i + 1);
-				if (s.getBytes().length != 1)
-					return false;
+				try {
+					if (s.getBytes("GBK").length != 1)
+						return false;
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
 			return true;
@@ -1013,8 +1055,13 @@ public class Utility {
 			str += " ";
 			for (int i = 0; i < str.length(); i++) {
 				String s = str.substring(i, i + 1);
-				if (s.getBytes().length != 2)
-					return false;
+				try {
+					if (s.getBytes("GBK").length != 2)
+						return false;
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
 			return true;

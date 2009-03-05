@@ -14,7 +14,7 @@ public class SegTagTest extends TestCase {
 	
 	static Log log = LogFactory.getLog(SegTagTest.class);
 
-	SegTag segTag = new SegTag(1);
+	SegTag segTag = new SegTag("dic");
 	
 	public void testSplit() throws Exception {
 		

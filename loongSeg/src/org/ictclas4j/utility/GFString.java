@@ -528,8 +528,13 @@ public class GFString {
 		byte[] b = null;
 
 		if (str != null) {
-			byte[] b1 = str.getBytes();
-			b = GFCommon.bytesCopy(b1, start, len);
+			try {
+				byte[] b1 = str.getBytes("GBK");
+				b = GFCommon.bytesCopy(b1, start, len);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 		}
 
@@ -714,13 +719,18 @@ public class GFString {
 		boolean result = false;
 
 		if (bin != null) {
-			byte[] b = bin.getBytes();
-			for (int i = 0; i < b.length; i++) {
-				if (b[i] != 48 && b[i] != 49)
-					return false;
-			}
+			try {
+				byte[] b = bin.getBytes("GBK");
+				for (int i = 0; i < b.length; i++) {
+					if (b[i] != 48 && b[i] != 49)
+						return false;
+				}
 
-			return true;
+				return true;
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return result;
 	}
@@ -756,8 +766,13 @@ public class GFString {
 		if (str != null) {
 			str = quan2ban(str);
 			if (str != null) {
-				if (str.length() * 2 == str.getBytes().length)
-					return true;
+				try {
+					if (str.length() * 2 == str.getBytes("GBK").length)
+						return true;
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -774,8 +789,13 @@ public class GFString {
 		if (str != null) {
 			str = quan2ban(str);
 			if (str != null) {
-				if (str.length() == str.getBytes().length)
-					return true;
+				try {
+					if (str.length() == str.getBytes("GBK").length)
+						return true;
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -793,11 +813,16 @@ public class GFString {
 			byte b[];
 
 			str = str.trim();
-			b = str.toUpperCase().getBytes();
-			for (int i = 0; i < b.length; i++) {
-				if (b[i] < 65 || b[i] > 90)
-					return false;
+			try {
+				b = str.toUpperCase().getBytes("GBK");
+				for (int i = 0; i < b.length; i++) {
+					if (b[i] < 65 || b[i] > 90)
+						return false;
 
+				}
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			return true;
 		}
@@ -949,7 +974,7 @@ public class GFString {
 
 		if (gbString == null)
 			return null;
-		// if (gbString.getBytes().length == gbString.length())
+		// if (gbString.getBytes("GBK").length == gbString.length())
 		// return gbString;
 
 		String temp = null;
@@ -1529,25 +1554,30 @@ public class GFString {
 		String hex = null;
 		byte value;
 
-		if (src != null && src.length() == src.getBytes().length) {
-			result = "";
-			byte left = 0;
-			byte[] b = src.getBytes();
-			for (int i = 0, j = 0; i < b.length; i++) {
-				j = i & 7;
-				if (j == 0)
-					left = b[i];
-				else {
-					value = (byte) ((b[i] << (8 - j)) | left);
-					left = (byte) (b[i] >> j);
-					hex = GFString.byte2hex((byte) value);
-					result += hex;
-					if (i == b.length - 1)
-						result += GFString.byte2hex(left);
+		try {
+			if (src != null && src.length() == src.getBytes("GBK").length) {
+				result = "";
+				byte left = 0;
+				byte[] b = src.getBytes("GBK");
+				for (int i = 0, j = 0; i < b.length; i++) {
+					j = i & 7;
+					if (j == 0)
+						left = b[i];
+					else {
+						value = (byte) ((b[i] << (8 - j)) | left);
+						left = (byte) (b[i] >> j);
+						hex = GFString.byte2hex((byte) value);
+						result += hex;
+						if (i == b.length - 1)
+							result += GFString.byte2hex(left);
+					}
 				}
-			}
 
-			result = result.toUpperCase();
+				result = result.toUpperCase();
+			}
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -1761,10 +1791,15 @@ public class GFString {
 
 	public static boolean hasZero(String msg) {
 		if (msg != null) {
-			byte[] bb = msg.getBytes();
-			for (byte b : bb)
-				if (b == 0)
-					return true;
+			try {
+				byte[] bb = msg.getBytes("GBK");
+				for (byte b : bb)
+					if (b == 0)
+						return true;
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		return false;
@@ -1778,12 +1813,17 @@ public class GFString {
 	 */
 	public static boolean isAlphanumeric(String str) {
 		if (str != null) {
-			byte[] bs = str.getBytes();
-			for (byte b : bs) {
-				if (b < 48 || b > 57 && b < 65 || b > 90 && b < 97 || b > 122)
-					return false;
+			try {
+				byte[] bs = str.getBytes("GBK");
+				for (byte b : bs) {
+					if (b < 48 || b > 57 && b < 65 || b > 90 && b < 97 || b > 122)
+						return false;
+				}
+				return true;
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			return true;
 		}
 		return false;
 	}
@@ -1845,15 +1885,20 @@ public class GFString {
 		boolean rs = false;
 		if (str1 != null && str2 != null) {
 			int len = str1.length() < str2.length() ? str1.length() : str2.length();
-			byte[] b1 = str1.getBytes();
-			byte[] b2 = str2.getBytes();
+			try {
+				byte[] b1 = str1.getBytes("GBK");
+				byte[] b2 = str2.getBytes("GBK");
 
-			for (int i = 0; i < len; i++) {
-				if (b2[i] > b1[i])
-					return true;
-				else if (b2[i] < b1[i])
-					return false;
+				for (int i = 0; i < len; i++) {
+					if (b2[i] > b1[i])
+						return true;
+					else if (b2[i] < b1[i])
+						return false;
 
+				}
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		return rs;
@@ -2052,23 +2097,28 @@ public class GFString {
 			String[] atoms = atomSplit(cstr);
 			for (String atom : atoms) {
 				if (isAllChinese(atom)) {
-					byte[] b = atom.getBytes();
-					int id = (256 + b[0]) * 256 + (256 + b[1]) - 256 * 256;
+					try {
+						byte[] b = atom.getBytes("GBK");
+						int id = (256 + b[0]) * 256 + (256 + b[1]) - 256 * 256;
 
-					int id1 = -20319;
-					int id2 = 0;
-					String last = null;
-					Iterator itr = bopoMap.keySet().iterator();
-					while (itr.hasNext()) {
-						String py = (String) itr.next();
-						id2 = bopoMap.get(py);
-						if (id >= id1 && id < id2) {
-							bopomofo += last == null ? py : last;
-							break;
-						} else {
-							last = py;
-							id1 = id2;
+						int id1 = -20319;
+						int id2 = 0;
+						String last = null;
+						Iterator itr = bopoMap.keySet().iterator();
+						while (itr.hasNext()) {
+							String py = (String) itr.next();
+							id2 = bopoMap.get(py);
+							if (id >= id1 && id < id2) {
+								bopomofo += last == null ? py : last;
+								break;
+							} else {
+								last = py;
+								id1 = id2;
+							}
 						}
+					} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 
 				} else
@@ -2145,11 +2195,20 @@ public class GFString {
 		int result = -1;
 
 		if (s != null && s.length() == 1 && isAllChinese(s)) {
-			byte[] b = s.getBytes();
-			int high = b[0] + 256;
-			int low = b[1] + 256;
+			try {
+				int high;
+				int low;
 
-			return (high - 176) * 94 + (low - 161);
+				byte[] b = s.getBytes("GBK");
+				high = b[0] + 256;
+				low = b[1] + 256;
+
+
+				return (high - 176) * 94 + (low - 161);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return result;
 	}
@@ -2158,14 +2217,19 @@ public class GFString {
 		int result = -1;
 
 		if (s != null && s.length() == 1) {
-			byte[] b = s.getBytes();
-			if (b.length == 2) {
-				int high = b[0] + 256;
-				int low = b[1] + 256;
+			try {
+				byte[] b = s.getBytes("GBK");
+				if (b.length == 2) {
+					int high = b[0] + 256;
+					int low = b[1] + 256;
 
-				return high * 256 + low;
-			} else
-				return b[0];
+					return high * 256 + low;
+				} else
+					return b[0];
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return result;
 	}
@@ -2269,14 +2333,19 @@ public class GFString {
 		if (msg != null) {
 			String[] atoms = atomSplit(msg);
 			for (int i = 0; i < atoms.length; i++) {
-				byte[] bs = atoms[i].getBytes();
-				if (bs.length == 1) {
-					if (bs[0] < 32 || bs[0] > 126)
-						return true;
-				} else if (bs.length == 2) {
-					if (GFCommon.getUnsigned(bs[0]) < 0x81 || GFCommon.getUnsigned(bs[0]) > 0xFE || GFCommon.getUnsigned(bs[1]) < 40
-							|| GFCommon.getUnsigned(bs[1]) > 0xFE)
-						return true;
+				try {
+					byte[] bs = atoms[i].getBytes("GBK");
+					if (bs.length == 1) {
+						if (bs[0] < 32 || bs[0] > 126)
+							return true;
+					} else if (bs.length == 2) {
+						if (GFCommon.getUnsigned(bs[0]) < 0x81 || GFCommon.getUnsigned(bs[0]) > 0xFE || GFCommon.getUnsigned(bs[1]) < 40
+								|| GFCommon.getUnsigned(bs[1]) > 0xFE)
+							return true;
+					}
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 
 			}
