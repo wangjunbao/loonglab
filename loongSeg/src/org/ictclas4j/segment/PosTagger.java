@@ -90,6 +90,8 @@ public class PosTagger {
 				personRecognize(segGraph, sns);
 				break;
 			case TT_PLACE:// Place name recognition
+				placeRecognize(segGraph, sns, coreDict);
+				break;
 			case TT_TRANS_PERSON:// Transliteration Person
 				placeRecognize(segGraph, sns, coreDict);
 				break;
@@ -567,6 +569,7 @@ public class PosTagger {
 	 * 
 	 */
 	private void placeRecognize(SegGraph segGraph, ArrayList<SegNode> sns, Dictionary coreDict) {
+		
 		if (segGraph != null && coreDict != null) {
 			int start = 1;
 			int end = 1;
@@ -576,6 +579,7 @@ public class PosTagger {
 				start = i;
 				end = start;
 				srcWord = sns.get(i).getSrcWord();
+				//log.debug("srcWord is "+srcWord);
 				if (getBestTag(sns, i) == 1) {
 					for (end = i + 1; end < sns.size(); end++) {
 						int bestTag = getBestTag(sns, end);
@@ -614,7 +618,7 @@ public class PosTagger {
 					newsn.setPos(pos);
 					newsn.setWord(unknownFlags);
 					newsn.setSrcWord(srcWord);
-					double value = computePossibility(start, end - start + 1, sns);
+					double value = computePossibility(start, end - start, sns);
 					newsn.setValue(value);
 					segGraph.insert(newsn, true);
 				}
@@ -733,6 +737,7 @@ public class PosTagger {
 					pos.setBest(true);
 					sns.get(i).addPos(pos);
 				}
+
 			}
 			// 把结束点去掉，用到它的目的仅仅是为了得到最后一个“末＃＃末”词的最优词性
 
