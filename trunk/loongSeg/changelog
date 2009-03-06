@@ -10,3 +10,6 @@
 2009-3-5
 1、增加jar文件打包程序
 2、修正分词程序在非GBK系统环境下不能工作的错误，将String.getByte()替换为String.getBytes("GBK")
+
+2009-3-6
+1、修改地名识别的bug，double value = computePossibility(start, end - start, sns);

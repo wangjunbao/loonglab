@@ -42,7 +42,7 @@ public class SegTag {
 		
 		personTagger = new TxtPosTagger(Utility.TAG_TYPE.TT_PERSON, dicDir+"/nr", coreDict);
 		transPersonTagger = new TxtPosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, dicDir+"/tr", coreDict);
-		placeTagger = new TxtPosTagger(Utility.TAG_TYPE.TT_TRANS_PERSON, dicDir+"/ns", coreDict);
+		placeTagger = new TxtPosTagger(Utility.TAG_TYPE.TT_PLACE, dicDir+"/ns", coreDict);
 		lexTagger = new TxtPosTagger(Utility.TAG_TYPE.TT_NORMAL, dicDir+"/lexical", coreDict);
 	}
 	
