@@ -413,6 +413,65 @@ public class Dictionary {
 		}
 		return result;
 	}
+	
+	/**
+	 * 查询词典，用于全切分时查询，提高性能
+	 * @param index
+	 * @param res
+	 * @param handle
+	 * @return
+	 */
+	public int findInOriginalTable4Split(int index, String res, int lastStart){
+		int result = -1;
+
+		
+		//log.debug("find word "+res+"...");
+		if (res != null && wts != null) {
+			WordTable wt = wts.get(index);
+			if (wt != null && wt.getCount() > 0) {
+				int start = lastStart;
+				int end = wt.getCount() - 1;
+				int mid = 0;
+				ArrayList<WordItem> wis = wt.getWords();				
+				while (start <= end) {
+					
+					mid = (start + end) / 2;
+					
+					//log.debug("start="+start+",end="+end+",mid="+mid);
+					WordItem wi = wis.get(mid);
+					//log.debug("mid word is "+wi.getWord());
+					int cmpValue = GFString.compareTo(wi.getWord(), res);
+					if (cmpValue == 0 ) {
+
+						while (mid >= 0 && res.compareTo(wis.get(mid).getWord()) == 0) {
+							mid--;
+						}
+						if (mid < 0 || res.compareTo(wis.get(mid).getWord()) != 0)
+							mid++;
+						result = mid;
+						return result;
+
+					} else if (cmpValue < 0 )
+						start = mid + 1;
+					else if (cmpValue > 0 )
+						end = mid - 1;
+
+					
+				}
+				
+
+				if(wis.get(mid).getWord().startsWith(res)){
+					return mid;
+				}
+
+				
+			}
+			
+			
+		}
+		return result;
+	}
+	
 
 	/**
 	 * 用2分法查询源词典库,看是否已存在
@@ -427,15 +486,19 @@ public class Dictionary {
 	public int findInOriginalTable(int index, String res, int handle) {
 		int result = -1;
 
+		
+		//log.debug("find word "+res+"...");
 		if (res != null && wts != null) {
 			WordTable wt = wts.get(index);
 			if (wt != null && wt.getCount() > 0) {
 				int start = 0;
 				int end = wt.getCount() - 1;
 				int mid = (end + start) / 2;
-				ArrayList<WordItem> wis = wt.getWords();
+				ArrayList<WordItem> wis = wt.getWords();				
 				while (start <= end) {
+					//log.debug("start="+start+",end="+end+",mid="+mid);
 					WordItem wi = wis.get(mid);
+					//log.debug("mid word is "+wi.getWord());
 					int cmpValue = GFString.compareTo(wi.getWord(), res);
 					if (cmpValue == 0 && (wi.getHandle() == handle || handle == -1)) {
 						if (handle == -1) {
@@ -456,6 +519,7 @@ public class Dictionary {
 
 					mid = (start + end) / 2;
 				}
+				
 			}
 		}
 		return result;
@@ -571,24 +635,24 @@ public class Dictionary {
 	 * @param word
 	 * @return
 	 */
-	public WordItem getMaxMatch(String word) {		
+	public WordItem getMaxMatch(String word,int start) {		
 		if (word != null) {
 			Preword pw = preProcessing(word);
 			if (pw != null & pw.getWord() != null && pw.getIndex() >= 0) {
 				String firstChar = pw.getWord().substring(0, 1);
-				int found = findInOriginalTable(pw.getIndex(), pw.getRes(), -1);
-				if (found == -1) {
-					ArrayList<WordItem> wis = wts.get(pw.getIndex()).getWords();
-					
-					if(wis!=null)
-						for (int j = 0; j < wis.size(); j++) {
-							int compValue = GFString.compareTo(wis.get(j).getWord(), pw.getRes());
-							if (compValue == 1) {
-								found = j;
-								break;
-							}
-						}
-				}
+				int found = findInOriginalTable4Split(pw.getIndex(), pw.getRes(), start);
+//				if (found == -1) {
+//					ArrayList<WordItem> wis = wts.get(pw.getIndex()).getWords();
+//					
+//					if(wis!=null)
+//						for (int j = 0; j < wis.size(); j++) {
+//							int compValue = GFString.compareTo(wis.get(j).getWord(), pw.getRes());
+//							if (compValue == 1) {
+//								found = j;
+//								break;
+//							}
+//						}
+//				}
 				// 从源词典表中找出去掉第一个开头的字之后相等的词
 				if (found >= 0 && wts != null && wts.get(pw.getIndex()) != null) {
 					// 至少有一个
@@ -596,22 +660,23 @@ public class Dictionary {
 					if (wis == null) return null;
 					
 					WordItem wi = wis.get(found);
-					String wordRet = firstChar + wi.getWord();					
-					return new WordItem(wordRet,wi.getLen(),wi.getHandle(),wi.getFreq());
+					String wordRet = firstChar + wi.getWord();	
+					
+					return new WordItem(wordRet,wi.getLen(),wi.getHandle(),wi.getFreq(),found);
 				}
 
-				ArrayList<WordItem> wis = null;
-				if (mts != null && mts.get(pw.getIndex()) != null) {
-					wis = mts.get(pw.getIndex()).getWords();
-					
-					if (wis != null)
-						for (WordItem wi : wis) {
-							if (pw.getRes() != null && pw.getRes().equals(wi.getWord())) {
-								String wordRet = firstChar + wi.getWord();								
-								return new WordItem(wordRet,wi.getLen(),wi.getHandle(),wi.getFreq());
-							}
-						}
-				}
+//				ArrayList<WordItem> wis = null;
+//				if (mts != null && mts.get(pw.getIndex()) != null) {
+//					wis = mts.get(pw.getIndex()).getWords();
+//					
+//					if (wis != null)
+//						for (WordItem wi : wis) {
+//							if (pw.getRes() != null && pw.getRes().equals(wi.getWord())) {
+//								String wordRet = firstChar + wi.getWord();								
+//								return new WordItem(wordRet,wi.getLen(),wi.getHandle(),wi.getFreq(),found);
+//							}
+//						}
+//				}
 			}
 		}
 		return null;

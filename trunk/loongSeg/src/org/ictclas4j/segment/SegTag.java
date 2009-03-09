@@ -49,6 +49,9 @@ public class SegTag {
 	
 
 	public SegResult split(String src) {
+		
+		long allStart=System.currentTimeMillis();
+		
 		SegResult sr = new SegResult(src);// 分词结果
 		String finalResult = null;
 
@@ -60,11 +63,24 @@ public class SegTag {
 			SentenceSeg ss = new SentenceSeg(src);
 			ArrayList<Sentence> sens = ss.getSens();
 			
+			long allSenCost=0;
+			
+			long senCost1=0;
+			long senCost2=0;
+			long graphCost=0;
+			long graphCost1=0;
+			
 			for (Sentence sen : sens) {
+				
+				long senStart=System.currentTimeMillis();
+				//log.debug("process "+sen.getContent()+"...");
+				
 				long start=System.currentTimeMillis();
 				MidResult mr = new MidResult();
 				mr.setIndex(index++);
 				mr.setSource(sen.getContent());
+				
+				long senMid=System.currentTimeMillis();
 				if (sen.isSeg()) {
 					// 原子分词
 					AtomSeg as = new AtomSeg(sen.getContent());
@@ -85,10 +101,15 @@ public class SegTag {
 //						log.debug((ii++)+","+node);
 //					}
 					
+					graphCost1+=System.currentTimeMillis()-start;
+					
 					// 生成二叉分词图表
 					SegGraph biSegGraph = GraphGenerate.biGenerate(segGraph, coreDict, bigramDict);
 					mr.setBiSegGraph(biSegGraph.getSnList());
 					println2Err("[graph time]:"+(System.currentTimeMillis()-start));
+					
+					graphCost+=System.currentTimeMillis()-start;
+					
 					start=System.currentTimeMillis();
 					
 					
@@ -107,6 +128,10 @@ public class SegTag {
 //						}
 //						log.debug("=====");
 //					}
+					
+					senCost1 = senCost1+(System.currentTimeMillis()-senStart);
+					
+					senMid=System.currentTimeMillis();
 					
 					for (ArrayList<Integer> onePath : bipath) {
 						// 得到初次分词路径
@@ -157,10 +182,26 @@ public class SegTag {
 					midResult = sen.getContent();
 				finalResult += midResult;
 				midResult = null;
+				
+				
+				long senCost=System.currentTimeMillis()-senStart;
+				//log.debug("sentence split cost "+(senCost)+"ms");
+				
+				allSenCost+=senCost;
+				
+				senCost2=senCost2+(System.currentTimeMillis()-senMid);
+				
+				
 			}
 
+			log.debug("allSenCost is "+allSenCost);
+			log.debug("senCost1="+senCost1+",senCost2="+senCost2+",graphcost="+graphCost+"," +
+					"graphCost1="+graphCost1+",findWordCost="+GraphGenerate.findWordCost+",getHandleCost="+GraphGenerate.getHandlecost);
+			
 			sr.setFinalResult(finalResult);
 		}
+		
+		log.debug("split cost "+(System.currentTimeMillis()-allStart)+"ms");
 
 		return sr;
 	}
