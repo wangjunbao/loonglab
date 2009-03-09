@@ -1,16 +1,24 @@
 package org.ictclas4j.segment;
 
 import java.util.ArrayList;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.ictclas4j.bean.Atom;
 import org.ictclas4j.bean.Dictionary;
 import org.ictclas4j.bean.SegNode;
 import org.ictclas4j.bean.WordItem;
-import org.ictclas4j.segment.SegGraph.NextElementIndex;
 import org.ictclas4j.utility.POSTag;
 import org.ictclas4j.utility.Utility;
 
 
 public class GraphGenerate {
+	
+	static Log log = LogFactory.getLog(GraphGenerate.class);
+	
+	public static long findWordCost=0;
+	public static long getHandlecost=0;
+	
 	/**
 	 * 全切分,生成切分图.即找出所有可能的词组  
 	 * 
@@ -88,13 +96,22 @@ public class GraphGenerate {
 				}
 
 				WordItem wi = null;
+				
 				for (; j <= atoms.size(); j++) {
 					int totalFreq = 0;
-					wi = dict.getMaxMatch(word);
+					long findWordStart=System.currentTimeMillis();
+					if(wi==null)
+						wi = dict.getMaxMatch(word,0);
+					else
+						wi = dict.getMaxMatch(word, wi.getIndex());
+					findWordCost+=(System.currentTimeMillis()-findWordStart);
 					if (wi != null) {
 						// find it
 						if (word.equals(wi.getWord())) {
+							findWordStart=System.currentTimeMillis();
+							//log.debug("===========getHandle for word "+word);
 							ArrayList<WordItem> wis = dict.getHandle(word);
+							getHandlecost+=(System.currentTimeMillis()-findWordStart);
 							for (WordItem w : wis)
 								totalFreq += w.getFreq();
 
@@ -127,6 +144,8 @@ public class GraphGenerate {
 					} else
 						break;
 				}
+				
+				
 			}
 
 		}

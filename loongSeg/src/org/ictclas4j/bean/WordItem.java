@@ -14,6 +14,8 @@ public class WordItem {
 	private int handle;// 句柄，用来标识词的词性
 	private int freq;// 频度，用来说明该词出现在语料库中的次数或概率
 	
+	private int index;//在wordTable里的索引号
+	
 	WordItem() {
 		
 	}
@@ -24,6 +26,15 @@ public class WordItem {
 		handle=_handle;
 		freq=_freq;
 	}
+	
+	WordItem(String _word,int _len,int _handle,int _freq,int _index) {
+		word=_word;
+		len=_len;
+		handle=_handle;
+		freq=_freq;
+		index=_index;
+	}
+	
 	
 	public int getFreq() {
 		return freq;
@@ -63,6 +74,16 @@ public class WordItem {
 		return ReflectionToStringBuilder.toString(this);
 
 	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
+	
+	
 	 
 
 }
