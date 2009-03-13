@@ -99,19 +99,19 @@ public class GraphGenerate {
 				
 				for (; j <= atoms.size(); j++) {
 					int totalFreq = 0;
-					long findWordStart=System.currentTimeMillis();
+					
 					if(wi==null)
 						wi = dict.getMaxMatch(word,0);
 					else
 						wi = dict.getMaxMatch(word, wi.getIndex());
-					findWordCost+=(System.currentTimeMillis()-findWordStart);
+					
 					if (wi != null) {
 						// find it
 						if (word.equals(wi.getWord())) {
-							findWordStart=System.currentTimeMillis();
+							//findWordStart=System.currentTimeMillis();
 							//log.debug("===========getHandle for word "+word);
-							ArrayList<WordItem> wis = dict.getHandle(word);
-							getHandlecost+=(System.currentTimeMillis()-findWordStart);
+							ArrayList<WordItem> wis = dict.getHandle(word,wi.getIndex());
+							//getHandlecost+=(System.currentTimeMillis()-findWordStart);
 							for (WordItem w : wis)
 								totalFreq += w.getFreq();
 
@@ -162,7 +162,7 @@ public class GraphGenerate {
 		final double smoothParam = 0.1;
 		double curFreq;
 
-		if (seg != null && dict != null && biDict != null) {
+		if (seg != null && dict != null/* && biDict != null*/) {
 			segGraph = new SegGraph();
 			ArrayList<SegNode> sgs = seg.getSnList();
 			SegGraph.NextElementIndex nextEleIndex=seg.new NextElementIndex(); 
@@ -184,7 +184,9 @@ public class GraphGenerate {
 
 					// 计算相临两个词之间的平滑值
 					// -log{a*P(Ci-1)+(1-a)P(Ci|Ci-1)} Note 0<a<1
+					long findWordStart=System.currentTimeMillis();
 					int twoFreq = biDict.getFreq(twoWords, 3);
+					findWordCost+=(System.currentTimeMillis()-findWordStart);
 					double temp = (double) 1 / Utility.MAX_FREQUENCE;
 					double value = smoothParam * (1 + curFreq) / (Utility.MAX_FREQUENCE + 80000);
 					value += (1 - smoothParam) * ((1 - temp) * twoFreq / (1 + curFreq) + temp);

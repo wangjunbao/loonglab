@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import org.ictclas4j.utility.Utility;
 import org.ictclas4j.utility.Utility.TAG_TYPE;
 
-
+//此类似乎无用
 public class Span {
 
 	public ContextStat context;
