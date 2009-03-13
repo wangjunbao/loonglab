@@ -13,3 +13,6 @@
 
 2009-3-6
 1、修改地名识别的bug，double value = computePossibility(start, end - start, sns);
+
+2009-3-10
+1、修改了Dictionary.getMaxMatch()方法，提高性能从3.5到2.5秒

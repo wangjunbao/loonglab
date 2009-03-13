@@ -1,4 +1,4 @@
-package org.ictclas4j.bean;
+package org.loonglab.segment.dictionary;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

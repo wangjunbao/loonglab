@@ -37,7 +37,8 @@ public class SegTag {
 	
 	public void initDictionary(String dicDir){
 		coreDict = new TxtDictionary(dicDir+"/coreDict.dct");
-		bigramDict = new TxtDictionary(dicDir+"/bigramDict.dct");
+		coreDict.loadBiDict(dicDir+"/bigramDict.dct");
+		//bigramDict = new TxtDictionary(dicDir+"/bigramDict.dct");
 		coreDict.loadUserDict(dicDir+"/userDict.dct");
 		
 		personTagger = new TxtPosTagger(Utility.TAG_TYPE.TT_PERSON, dicDir+"/nr", coreDict);

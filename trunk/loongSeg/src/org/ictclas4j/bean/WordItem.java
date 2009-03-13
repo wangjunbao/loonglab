@@ -1,5 +1,7 @@
 package org.ictclas4j.bean;
 
+import java.util.Map;
+
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
@@ -16,6 +18,23 @@ public class WordItem {
 	
 	private int index;//在wordTable里的索引号
 	
+	/**
+	 * 使用jdk自带的HashMap实现，因为数据量较小，应该能保证性能
+	 * 若性能无法满足，可考虑两层索引
+	 */
+	private Map<String,BiWordItem> biDic;//以该wordItem为开头的二元词条列表
+	
+	
+
+
+	public Map<String, BiWordItem> getBiDic() {
+		return biDic;
+	}
+
+	public void setBiDic(Map<String, BiWordItem> biDic) {
+		this.biDic = biDic;
+	}
+
 	WordItem() {
 		
 	}
