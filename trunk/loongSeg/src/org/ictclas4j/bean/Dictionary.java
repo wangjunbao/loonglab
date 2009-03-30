@@ -10,12 +10,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ictclas4j.utility.GFCommon;
 import org.ictclas4j.utility.GFString;
 import org.ictclas4j.utility.Utility;
+import org.loonglab.segment.dictionary.impl.UnicodeComparator;
 
 
 public class Dictionary {
@@ -749,16 +753,19 @@ public class Dictionary {
 			
 			int i=0;
 			for (WordTable wt : wts) {
-				out.write((wt.getCount()+"").getBytes());
-				out.write('\r');
-				out.write('\n');
-				if(wt.getCount()>0)
-					for (WordItem wi : wt.getWords()) {
+//				out.write((wt.getCount()+"").getBytes());
+//				out.write('\r');
+//				out.write('\n');
+				if(wt.getCount()>0){
+					List<WordItem> wis=wt.getWords();
+					Collections.sort(wis,new UnicodeComparator());
+					for (WordItem wi : wis) {
 						String wordStr=Utility.getGB(i)+wi.getWord()+" "+wi.getFreq()+" "+wi.getHandle();
 						out.write(wordStr.getBytes("GBK"));
 						out.write('\r');
 						out.write('\n');
 					}
+				}
 					
 				i++;
 			}
