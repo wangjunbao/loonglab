@@ -282,14 +282,14 @@ public class SegTag {
 	
 	public void outputDic(){
 		coreDict.outputChars("dic/coreDict.dct");
-		bigramDict.outputChars("dic/bigramDict.dct");
-		personTagger.getUnknownDict().outputChars("dic/nr.dct");
-		transPersonTagger.getUnknownDict().outputChars("dic/tr.dct");
-		placeTagger.getUnknownDict().outputChars("dic/ns.dct");
-		personTagger.getContextStat().outputChars("dic/nr.ctx");
-		transPersonTagger.getContextStat().outputChars("dic/tr.ctx");
-		placeTagger.getContextStat().outputChars("dic/ns.ctx");
-		lexTagger.getContextStat().outputChars("dic/lexical.ctx");
+//		bigramDict.outputChars("dic/bigramDict.dct");
+//		personTagger.getUnknownDict().outputChars("dic/nr.dct");
+//		transPersonTagger.getUnknownDict().outputChars("dic/tr.dct");
+//		placeTagger.getUnknownDict().outputChars("dic/ns.dct");
+//		personTagger.getContextStat().outputChars("dic/nr.ctx");
+//		transPersonTagger.getContextStat().outputChars("dic/tr.ctx");
+//		placeTagger.getContextStat().outputChars("dic/ns.ctx");
+//		lexTagger.getContextStat().outputChars("dic/lexical.ctx");
 	}
 	
 	private static void println2Err(String str) {

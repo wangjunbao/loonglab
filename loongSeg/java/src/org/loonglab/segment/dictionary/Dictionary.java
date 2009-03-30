@@ -1,28 +1,15 @@
 package org.loonglab.segment.dictionary;
 
-import java.util.ArrayList;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-
-public class Dictionary {
-	
-	static Log log = LogFactory.getLog(Dictionary.class);
-	
+/**
+ * 字典接口
+ * @author loonglab
+ *
+ */
+public interface Dictionary {
 	/**
-	 * 首字hash索引，剩余部分用二分法查找
+	 * 在字典中查询某词条
+	 * @param word
+	 * @return
 	 */
-	public Map<Integer,WordTable> wts;
-
-
-
-	public Dictionary(String filename) {
-		
-	}
-
-
-
-
+	public Hit search(String word);
 }
