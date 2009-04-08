@@ -12,4 +12,5 @@ public interface Dictionary {
 	 * @return
 	 */
 	public Hit search(String word);
+	
 }

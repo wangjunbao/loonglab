@@ -184,12 +184,29 @@ public class HashBinaryDictionary implements Dictionary{
     }
     
     
+    
+    
     public static void main(String[] args) {
 		Dictionary dic=new HashBinaryDictionary("dic/coreDict.dct");
 		
-		Hit hit=dic.search("阿谀奉承");
+		Hit hit1=dic.search("阿");
+		Hit hit2=dic.search("阿谀");
+		Hit hit3=dic.search("阿谀奉");		
+		Hit hit4=dic.search("阿谀奉承");
 		
 		
+	}
+
+	public Hit search(String word, boolean lastRelative) {
+		//看看上次的查询是否能用来限制本次查询的
+		if(lastHit!=null){
+			if(!word.startsWith(lastHit.getSearchWord())){
+				lastStart=-1;
+				lastEnd=-1;
+			}
+		}
+		
+		return search(word);
 	}
 
 }
