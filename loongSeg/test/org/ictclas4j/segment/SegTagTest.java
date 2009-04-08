@@ -9,12 +9,13 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ictclas4j.bean.SegResult;
+import org.ictclas4j.utility.Utility;
 
 public class SegTagTest extends TestCase {
 	
 	static Log log = LogFactory.getLog(SegTagTest.class);
 
-	SegTag segTag = new SegTag("dic");
+	//SegTag segTag = new SegTag("dic");
 	
 	public void testSplit() throws Exception {
 		
@@ -27,9 +28,13 @@ public class SegTagTest extends TestCase {
 		}
 		reader.close();
 		
-		SegResult result=segTag.split(text.toString());
+		//SegResult result=segTag.split(text.toString());
 		
-		log.info(result.getFinalResult());
+		//log.info(result.getFinalResult());
+	}
+	
+	public void testUtility() throws Exception {
+		log.info("===="+Utility.CC_ID("/"));
 	}
 
 }

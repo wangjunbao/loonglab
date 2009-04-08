@@ -27,7 +27,7 @@ public class Hit {
 	 */
 	public static int STATE_NONE=-1;
 	/**
-	 * 没找到，到存在前面字符相同的单词
+	 * 没找到，但存在前面字符相同的单词
 	 */
 	public static int STATE_NEXT=0;
 	/**
@@ -35,12 +35,45 @@ public class Hit {
 	 */
 	public static int STATE_HIT=1;
 	
+	
+	
+	
+	public Hit() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public Hit(String searchWord, WordItem word, int state) {
 		super();
 		this.searchWord = searchWord;
 		this.word = word;
 		this.state = state;
 	}
+
+	public String getSearchWord() {
+		return searchWord;
+	}
+
+	public void setSearchWord(String searchWord) {
+		this.searchWord = searchWord;
+	}
+
+	public WordItem getWord() {
+		return word;
+	}
+
+	public void setWord(WordItem word) {
+		this.word = word;
+	}
+
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+	
 	
 	
 	
