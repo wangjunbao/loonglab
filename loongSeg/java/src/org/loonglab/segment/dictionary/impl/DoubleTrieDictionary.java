@@ -28,6 +28,10 @@ public class DoubleTrieDictionary implements Dictionary {
 	ArrayList<BaseNode> baseArray;
 	ArrayList<Integer> checkArray;
 	
+	long searchIdleTime=0;
+	
+	int minIdleNode=0;
+	
 	public void loadDicFromFile(String fileName){
 		List<WordItem> allWords=new ArrayList<WordItem>();
 		
@@ -62,6 +66,8 @@ public class DoubleTrieDictionary implements Dictionary {
 			//2、遍历数组，构造双数组Trie树
 			buildTrieTree(allWords,maxWordLength);
 			
+			log.debug("=======search idle time is "+searchIdleTime);
+			
 		} catch (Exception e1) {
 			log.error(e1.getMessage(),e1);
 			throw new SegmentException(e1.getMessage(),e1);
@@ -79,6 +85,7 @@ public class DoubleTrieDictionary implements Dictionary {
 		//TODO base和check直接用数组实现
 		//TODO 设置成词标志 ok
 		//TODO 将无分支的节点提出来
+		//TODO 优化查找空闲空间
 		
 		//对allWords进行排序
 		Collections.sort(allWords);
@@ -86,16 +93,20 @@ public class DoubleTrieDictionary implements Dictionary {
 		log.debug(allWords.size()+" word sort finish...");
 		
 		//第一次遍历，把首字放到Base数组中
+		
+		int firstSize=0;
 		for (WordItem wordItem : allWords) {
 			char c=wordItem.getWord().charAt(0);
 			int key=ChineseEncoder.hashCode(c);
 			
 			//判断重复的首字
-			BaseNode bn=baseArray.get(key);
+			BaseNode bn=baseArray.get(key);			
 			if(bn==null){
 				bn=new BaseNode(1,c);				
 				baseArray.set(key, bn);
 				checkArray.set(key, 0);
+				
+				firstSize++;
 			}
 			
 			if(wordItem.getWord().length()==1)
@@ -106,6 +117,7 @@ public class DoubleTrieDictionary implements Dictionary {
 			
 		}
 		
+		log.debug("first size is "+firstSize);
 		log.debug("first char save into double array...");
 		
 	
@@ -141,15 +153,18 @@ public class DoubleTrieDictionary implements Dictionary {
 						lastPrefix=curPrefix;
 					
 					if(curPrefix.equals(lastPrefix)){
-						childKeys.add(curkey);
-						childChars.add(curChar);
+						if(!childKeys.contains(curkey)){
+							childKeys.add(curkey);
+							childChars.add(curChar);
+							
+							if(wi.getWord().length()==i+1){
+								wiList.add(wi);
+								//log.debug("+++wi is "+wi);
+							}							
+							else
+								wiList.add(null);
+						}
 						
-						if(wi.getWord().length()==i+1){
-							wiList.add(wi);
-							//log.debug("+++wi is "+wi);
-						}							
-						else
-							wiList.add(null);
 					}
 					else{
 						buildSubTree(lastPrefix, childKeys, childChars, wiList);
@@ -196,6 +211,7 @@ public class DoubleTrieDictionary implements Dictionary {
 
 	private void buildSubTree(String lastPrefix, List<Integer> childKeys,
 			List<Character> childChars, List<WordItem> wiList) {
+		
 		//==========开始处理childKeys=============
 		//（1）搜索前缀
 //		log.debug("=====lastPrefix is "+lastPrefix+"======");
@@ -218,11 +234,11 @@ public class DoubleTrieDictionary implements Dictionary {
 		//（2）查找是否有空闲空间
 		//int lastK=lastCharIndex[lastkey];
 		BaseNode bn=baseArray.get(lkey);	
-		int k=0;
+		int k=10000;
 		
 		boolean success=false;
 		
-		//long startTime=System.currentTimeMillis();
+		long startTime=System.currentTimeMillis();
 		//if(childKeys.size()>1){
 			while(!success){
 				success=true;
@@ -238,7 +254,7 @@ public class DoubleTrieDictionary implements Dictionary {
 				
 				
 			}
-			
+			searchIdleTime=searchIdleTime+(System.currentTimeMillis()-startTime);
 			//log.debug("search idle space cost "+(System.currentTimeMillis()-startTime));
 			
 			//（3）放置子节点(TODO childkeys可以用set来表示）
@@ -251,6 +267,10 @@ public class DoubleTrieDictionary implements Dictionary {
 					node=new BaseNode(1,childChar);								
 					baseArray.set(k+childkey,node);
 					checkArray.set(k+childkey, lkey);
+					
+//					if((k+childkey)>minIdleNode){
+//						minIdleNode=(k+childkey);
+//					}
 				}
 				
 				if(node.getWordItem()==null){
@@ -333,25 +353,27 @@ public class DoubleTrieDictionary implements Dictionary {
 	public void printDATrie(){
 		int size=0;
 		int i=0;
+		int ii=0;
 		for (BaseNode bn : baseArray) {			
 			if(bn!=null){
-				log.info(i+","+bn+","+checkArray.get(i));
+				//log.info(i+","+bn+","+checkArray.get(i));
 				size++;
+				ii=i;
 			}
 				
 			
 			i++;
 		}
 		
-		log.info("actual size is "+size);
+		log.info("actual size is "+size+",ii="+ii);
 		
 		
 	}
 	
 	public static void main(String[] args) {
-		DoubleTrieDictionary dtd=new DoubleTrieDictionary(500000);
+		DoubleTrieDictionary dtd=new DoubleTrieDictionary(5000000);
 		dtd.loadDicFromFile("dic/coreDict.dct");
-		//dtd.printDATrie();
+		dtd.printDATrie();
 		
 		//dtd.search("阿拉伯埃及共和国");
 	}
