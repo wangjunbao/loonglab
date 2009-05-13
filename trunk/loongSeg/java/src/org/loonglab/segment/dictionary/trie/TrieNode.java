@@ -1,7 +1,10 @@
 package org.loonglab.segment.dictionary.trie;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.loonglab.segment.dictionary.WordItem;
 
 /**
@@ -12,9 +15,9 @@ import org.loonglab.segment.dictionary.WordItem;
 public class TrieNode implements Comparable<TrieNode>{
 	
 	/**
-	 * 子节点列表，null表示没有子节点
+	 * 子节点列表，大小为零表示没有子节点
 	 */
-	List<TrieNode> subNodes;
+	List<TrieNode> subNodes=new ArrayList<TrieNode>();
 	
 	/**
 	 * 如果该节点为某词语的末节点，则该属性表示对应的词语，否则该属性为null
@@ -68,6 +71,16 @@ public class TrieNode implements Comparable<TrieNode>{
 	public int compareTo(TrieNode o) {
 		
 		return ch-o.getCh();
+	}
+	
+	public void addSubNode(TrieNode tn){
+		subNodes.add(tn);
+		Collections.sort(subNodes);
+	}
+	
+	@Override
+	public String toString() {		
+		return ReflectionToStringBuilder.toString(this);
 	}
 	
 	
