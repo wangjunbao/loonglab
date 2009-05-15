@@ -47,6 +47,15 @@ public class WordItem implements Comparable<WordItem>{
 		//return word;
 
 	}
+	
+	public int getFreq(){
+		int freq=0;
+		for (POS pos : posList) {
+			freq=freq+pos.getFreq();
+		}
+		
+		return freq;
+	}
 
 
 

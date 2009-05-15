@@ -81,7 +81,7 @@ public class SegNode {
 	
 	@Override
 	public String toString() {
-		return wordItem.toString();
+		return wordItem.getWord();
 	}
 	
 	

@@ -9,7 +9,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 public class POS {
 	private int tag;// 词性标记，如：nr，高8位代表词性的第一个字符，低8位代表词的第二个字符
 
-	private double freq;// 该词性出现的频率
+	private int freq;// 该词性出现的频率
 	
 	//private int prev;//前一个词的N个词性中和该词性最匹配的那一个（下标位置）
 	
@@ -19,7 +19,7 @@ public class POS {
 		
 	}
 	
-	public POS(int pos,double value){
+	public POS(int pos,int value){
 		this.tag=pos;
 		this.freq=value;
 	}
@@ -32,11 +32,11 @@ public class POS {
 		this.tag = pos;
 	}
 
-	public double getFreq() {
+	public int getFreq() {
 		return freq;
 	}
 
-	public void setFreq(double value) {
+	public void setFreq(int value) {
 		this.freq = value;
 	}
   
