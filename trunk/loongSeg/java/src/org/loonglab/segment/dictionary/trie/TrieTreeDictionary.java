@@ -115,6 +115,38 @@ public class TrieTreeDictionary {
 	}
 	
 	/**
+	 * 查找某一个单词，如果没有查到返回null
+	 * @param word
+	 * @return
+	 */
+	public WordItem searchWord(String word){
+		char firstChar=word.charAt(0);
+		int firstKey=ChineseEncoder.hashCode(firstChar);
+		
+		TrieNode tn=dicWords[firstKey];
+		
+		if(tn!=null){
+			if(word.length()==1)
+				return tn.getWordItem();
+			
+			for (int i = 1; i < word.length(); i++) {
+				char c=word.charAt(i);
+				TrieNode node=binarySearch(tn.subNodes, c);
+				if(node==null){
+					return null;
+				}
+				else if(i==word.length()-1){
+					return node.getWordItem();
+				}
+				else
+					tn=node;
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * 用二分法在子节点列表中查询对应某个字符的节点,返回null表示没有找到
 	 * @param subNodes
 	 * @param c

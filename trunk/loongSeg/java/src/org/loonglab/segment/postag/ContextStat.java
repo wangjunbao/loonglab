@@ -1,47 +1,36 @@
-package org.ictclas4j.bean;
+package org.loonglab.segment.postag;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
-import org.ictclas4j.utility.GFCommon;
-import org.ictclas4j.utility.Utility;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-/**
- * 相邻角色之间相关度
- * @author loonglab
- * ==============================构成人名的角色=================================
-Tag = B(  1), Count =   513,    姓氏
-Tag = C(  2), Count =   955,    双名的首字
-Tag = D(  3), Count = 1,043,    双名的末字
-Tag = E(  4), Count =   574,    单名
-Tag = F(  5), Count =     3,    前缀
-Tag = G(  6), Count =     9,    后缀
-*Tag = K( 10), Count =     0,   人名的上文
-Tag = L( 11), Count = 1,198,    人名的下文
-Tag = M( 12), Count = 1,684,    两个中国人名之间的成分
-Tag = N( 13), Count =    67,    <无>
-*Tag = U( 20), Count =     0,   人名的上文与姓氏成词
-*Tag = V( 21), Count =     0,   人名的末字与下文成词
-Tag = X( 23), Count =    84,    姓与双名首字成词
-Tag = Y( 24), Count =    47,    姓与单名成词
-Tag = Z( 25), Count =   388,    双名本身成词
-Tag = m( 44), Count =    58,    <无>
-Tag = *(100), Count =     1,    始##始
-Tag = *(101), Count =     1,    末##末 
-Tag = A(  0), Count = 1061971,  普通词
- */
-public class TxtContextStat extends ContextStat{
+
+
+public class ContextStat {
 	
+	static Log log = LogFactory.getLog(ContextStat.class);
 	
+	protected int tableLen;
 
-	@Override
+	protected int[] symbolTable;
+
+	protected TagContext tc;
+
+
+
+	public ContextStat() { 
+		tc = new TagContext();
+	}
+
+	public boolean load(String fileName) {
+		return load(fileName, false);
+	}
+
 	public boolean load(String fileName, boolean isReset) {
-		
 		try {
 			
 			BufferedReader br=new BufferedReader(new InputStreamReader(new FileInputStream(fileName),"GBK"));
@@ -59,7 +48,7 @@ public class TxtContextStat extends ContextStat{
 			}
 			
 			//总频次
-			TagContext tc = new TagContext();
+			//TagContext tc = new TagContext();
 			int key=new Integer(br.readLine());
 			int totalFreq =new Integer(br.readLine());
 			
@@ -90,9 +79,7 @@ public class TxtContextStat extends ContextStat{
 
 			tc.setTagFreq(tagFreq);
 			tc.setContextArray(contextArray);
-			tcList.add(tc);
-			
-			
+		
 			
 			br.close();
 			
@@ -102,14 +89,48 @@ public class TxtContextStat extends ContextStat{
 		}
 
 		return true;
+	}
+
+	public int getFreq(int key, int symbol) {
+
+		int index = Arrays.binarySearch(symbolTable,symbol);
+		if (index == -1)// error finding the symbol
+			return 0;
+
+		// Add the frequency
+		int frequency = 0;
+		if (tc.getTagFreq() != null)
+			frequency = tc.getTagFreq()[index];
+		return frequency;
 
 	}
 
-	public TxtContextStat() {
-		super();
-		// TODO Auto-generated constructor stub
+	public double getPossibility(int key, int prev, int cur) {
+		double result = 0;
+
+		int curIndex = Arrays.binarySearch(symbolTable,cur);
+		int prevIndex = Arrays.binarySearch(symbolTable,prev);
+
+
+		// return a lower value, not 0 to prevent data sparse
+		if (tc == null || curIndex == -1 || prevIndex == -1
+				|| tc.getContextArray()[prevIndex][curIndex] == 0
+				|| tc.getTagFreq()[prevIndex] == 0)
+			return 0.000001;
+		
+		int prevCurConFreq = tc.getContextArray()[prevIndex][curIndex];
+		int prevFreq = tc.getTagFreq()[prevIndex];
+
+		// 0.9 and 0.1 is a value based experience
+		result = 0.9 * (double) prevCurConFreq;
+		result /= (double) prevFreq;
+		result += 0.1 * (double) prevFreq / (double) tc.getTotalFreq();
+
+		return result;
 	}
+
+
+
 	
-	
-	
+
 }

@@ -23,6 +23,7 @@ public class ContextStat {
 
 	protected int[] symbolTable;
 
+	//通常只有一个TagContext，弄个list做什么
 	protected ArrayList<TagContext> tcList;
 
 	//static Logger logger = Logger.getLogger(ContextStat.class);

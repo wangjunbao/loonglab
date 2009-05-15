@@ -101,6 +101,11 @@ public class PosTagger {
 		return true;
 	}
 
+	/**
+	 * 普通的词性标注
+	 * @param sns
+	 * @return
+	 */
 	public boolean recognition(ArrayList<SegNode> sns) {
 
 		if (sns != null && unknownDict != null && context != null) {
