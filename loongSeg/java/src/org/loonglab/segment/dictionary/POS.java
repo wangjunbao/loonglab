@@ -6,12 +6,10 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
  * 词性标记
  * 
  */
-public class POS {
+public class POS implements Cloneable{
 	private int tag;// 词性标记，如：nr，高8位代表词性的第一个字符，低8位代表词的第二个字符
 
 	private int freq;// 该词性出现的频率
-	
-	//private int prev;//前一个词的N个词性中和该词性最匹配的那一个（下标位置）
 	
 	private boolean isBest;
 	
@@ -53,4 +51,13 @@ public class POS {
 		return ReflectionToStringBuilder.toString(this);
 
 	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		// TODO Auto-generated method stub
+		return super.clone();
+	}
+	
+	
+	
 }

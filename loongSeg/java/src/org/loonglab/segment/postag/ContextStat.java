@@ -26,11 +26,8 @@ public class ContextStat {
 		tc = new TagContext();
 	}
 
-	public boolean load(String fileName) {
-		return load(fileName, false);
-	}
 
-	public boolean load(String fileName, boolean isReset) {
+	public boolean load(String fileName) {
 		try {
 			
 			BufferedReader br=new BufferedReader(new InputStreamReader(new FileInputStream(fileName),"GBK"));

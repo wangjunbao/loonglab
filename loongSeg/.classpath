@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.13.jar"/>
 	<classpathentry kind="lib" path="lib/junit/junit-3.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-beanutils.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

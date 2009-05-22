@@ -1,4 +1,4 @@
-package org.loonglab.segment;
+package org.loonglab.segment.postag;
 
 public interface POSTag {
 	int SEN_BEGIN=1;//句子的开始标记“始##始”

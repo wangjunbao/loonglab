@@ -1,8 +1,5 @@
 package org.loonglab.segment.nshort;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,22 +9,22 @@ import java.util.Queue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ictclas4j.utility.Utility;
-import org.loonglab.segment.POSTag;
 import org.loonglab.segment.SegmentException;
 import org.loonglab.segment.dictionary.WordItem;
 import org.loonglab.segment.dictionary.loader.TxtDicFileLoader;
 import org.loonglab.segment.dictionary.trie.TrieTreeDictionary;
+import org.loonglab.segment.postag.ContextStat;
+import org.loonglab.segment.postag.POSTag;
+import org.loonglab.segment.postag.PosLink;
 import org.loonglab.segment.postag.PosTagger;
-
-import com.sun.jmx.remote.internal.ArrayQueue;
+import org.loonglab.segment.postag.TagNode;
 
 public class NShortSeg {
 	
 	static Log log = LogFactory.getLog(NShortSeg.class);
 	
-	public static WordItem SENTENCE_BEGIN=new WordItem("始##始",1,50610);
-	public static WordItem SENTENCE_END=new WordItem("末##末",4,50610);
+	public static WordItem SENTENCE_BEGIN=new WordItem(WordItem.SENTENCE_BEGIN,1,50610);
+	public static WordItem SENTENCE_END=new WordItem(WordItem.SENTENCE_END,4,50610);
 	
 	public static int MAX_FREQUENCE=2079997;
 	public static double smoothParam = 0.1;
@@ -107,13 +104,22 @@ public class NShortSeg {
 		print(firstNode);
 		
 		//2、dijkstra算法
+		List<WordItem> path = getPath(firstNode);
+		
+		
+		return path;
+	}
+
+
+
+	private List<WordItem> getPath(SegNode firstNode) {
 		List<SegNode> open=new ArrayList<SegNode>();
 		open.add(firstNode);
 		
+		SegNode sn=open.get(0);
 		
 		
-		SegNode sn=null;
-		while(sn!=lastNode&&!open.isEmpty()){
+		while(!sn.getWordItem().getWord().equals(WordItem.SENTENCE_END)&&!open.isEmpty()){
 			sn=open.get(0);
 			
 			open.remove(sn);
@@ -148,18 +154,16 @@ public class NShortSeg {
 		}
 		
 		List<WordItem> path=new ArrayList<WordItem>();
-		if(sn==lastNode){
-			path.add(sn.getWordItem());
-			while(sn.getPathParent()!=null){
-				path.add(sn.getPathParent().getWordItem());
-				sn=sn.getPathParent();
-			}
-				
+
+		path.add(sn.getWordItem());
+		while(sn.getPathParent()!=null){
+			path.add(sn.getPathParent().getWordItem());
+			sn=sn.getPathParent();
 		}
+				
+
 		
 		Collections.reverse(path);
-		
-		
 		return path;
 	}
 	
@@ -202,8 +206,91 @@ public class NShortSeg {
 		}
 		
 	}
+	
+	public List<WordItem> segUnkownWord(List<TagNode> tagNodes){
+		String patternStr=word2pattern(tagNodes);
+		
+		log.debug(patternStr);
+		
+		// 人名识别模式
+		final String[] patterns = { "BBCD", "BBC", "BBE", "BBZ", "BCD", "BEE", "BE", "BG", "BXD", "BZ", "CDCD", "CD",
+				"EE", "FB", "Y", "XD"};
+		
+		//构造识别前的词语网络图
+		SegNode parentNode=null;
+		List<SegNode> segNodes=new ArrayList<SegNode>();
+		for (TagNode tagNode : tagNodes) {
+			SegNode segNode=new SegNode();
+			segNode.setWordItem(tagNode.getWordItem());
+			if(parentNode!=null){
+				parentNode.addLink(new SegLink(0,segNode));
+				segNode.setPathValue(Double.MAX_VALUE);
+			}
+				
+			
+			parentNode=segNode;
+			
+			segNodes.add(segNode);
+		}
+		
+		//修改词语网络图，增加未登录词
+		WordItem personItem=dic.searchWord(WordItem.UNKNOWN_PERSON);
+		for (String pattern : patterns) {
+			int k=-pattern.length();
+			while((k=patternStr.indexOf(pattern,k+pattern.length()))!=-1){
+				SegNode segNode=new SegNode();
+				segNode.setPathValue(Double.MAX_VALUE);
+				String srcWord="";
+				WordItem item=null;
+				try {
+					//需要克隆一份，否则这句话中出现多个人名会出错
+					item = (WordItem) personItem.clone();
+					item.getPosList().get(0).setTag(POSTag.NOUN_PERSON);					
+				} catch (CloneNotSupportedException e) {
+					throw new SegmentException(e.getMessage(),e);
+				}
+				segNode.setWordItem(item);
+				segNode.addLink(new SegLink(0,segNodes.get(k+pattern.length())));
+				segNodes.get(k-1).addLink(new SegLink(0,segNode));
+				
+				//拼出实际人名 
+				//TODO 把非人名组成成分去除掉
+				for (int i = k; i < k+pattern.length(); i++) {
+					srcWord=srcWord+segNodes.get(i).getWordItem().getWord();
+				}
+				
+				segNode.getWordItem().setSrcWord(srcWord);
+			}
+		}
+		
+		
+		calcLinkValue(segNodes.get(0));
+		List<WordItem> results=getPath(segNodes.get(0));
+		
+		return results;
+	}
 
 
+	// 把经过初次分词后的链表形式转成人名字符串模式
+	private String word2pattern(List<TagNode> tns) {
+		String result = null;
+
+		result = "";
+		for (TagNode tn : tns) {
+			result += (char) (getBestTag(tn) + 'A');
+		}
+
+		return result;
+	}
+
+	private int getBestTag(TagNode tn) {
+		for (PosLink link : tn.getLinks()) {
+			if(link.getPos().isBest())
+				return link.getPos().getTag();
+		}
+		
+		return -1;
+	}
 
 	public static void main(String[] args) {
 		long startTime=System.currentTimeMillis();
@@ -211,7 +298,7 @@ public class NShortSeg {
 		TrieTreeDictionary biDic=TxtDicFileLoader.loadDic("dic/bigramDict.dct");
 		NShortSeg nsg=new NShortSeg(dic,biDic);
 		log.info("loading cost is "+(System.currentTimeMillis()-startTime));
-		List<WordItem> result=nsg.segSentence("刘岗说的确实有理");		
+		List<WordItem> result=nsg.segSentence("曾佳说的确实有理");		
 		
 		log.info("total cost is "+(System.currentTimeMillis()-startTime));
 		
@@ -219,12 +306,59 @@ public class NShortSeg {
 			System.out.print(wordItem.getWord()+"/");
 		}
 		
-		TrieTreeDictionary unknownDic=TxtDicFileLoader.loadDic("dic/nr.dct");
+//		TrieTreeDictionary unknownDic=TxtDicFileLoader.loadDic("dic/nr.dct");
+//		ContextStat cs=new ContextStat();
+//		cs.load("dic/nr.ctx");
+		
+		ContextStat ncs=new ContextStat();
+		ncs.load("dic/lexical.ctx");
 		
 		
-		PosTagger posTagger=new PosTagger(dic,unknownDic,null);
+//		PosTagger posTagger=new PosTagger(dic,unknownDic,cs);
 		
-		posTagger.posUnkownTag(result);
+		PosTagger lexPosTagger=new PosTagger(dic,null,ncs);
+		
+//		List<TagNode> tagNodes=posTagger.posUnkownTag(result);
+//		List<WordItem> secResult=nsg.segUnkownWord(tagNodes);
+//		
+//		System.out.println("");
+//		for (WordItem wordItem : secResult) {
+//			String word=wordItem.getWord();
+//			if(wordItem.getSrcWord()!=null)
+//				word=wordItem.getSrcWord();
+//			System.out.print(word+"/");
+//		}
+		
+		List<WordItem> finalResult=lexPosTagger.posTag(result);
+		
+		log.info(outputResult(finalResult));
 
+	}
+	
+	// 根据分词路径生成分词结果
+	private static String outputResult(List<WordItem> wrList) {
+		String result = null;
+		String temp=null;
+		char[] pos = new char[2];
+		if (wrList != null && wrList.size() > 0) {
+			result = "";
+			for (int i = 0; i < wrList.size(); i++) {
+				WordItem wi = wrList.get(i);
+				if (wi.getPos().getTag() != POSTag.SEN_BEGIN && wi.getPos().getTag() != POSTag.SEN_END) {
+					int tag = wi.getPos().getTag();
+					pos[0] = (char) (tag / 256);
+					pos[1] = (char) (tag % 256);
+					temp=""+pos[0];
+					if(pos[1]>0)
+						temp+=""+pos[1];
+					String word=wi.getWord();
+					if(wi.getSrcWord()!=null)
+						word=wi.getSrcWord();
+					result += word + "/" + temp + " ";
+				}
+			}
+		}
+
+		return result;
 	}
 }
