@@ -42,10 +42,16 @@ public class WordItem implements Comparable<WordItem>,Cloneable{
 	//Dictionary biDic;//¶þÔª´ÊÌõ´Êµä
 	
 	
+	
 	public WordItem(String word){
 		this.word=word;
 	}
 	
+	public WordItem() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public WordItem(String _word,int _handle,int _freq) {
 		word=_word;
 		POS pos=new POS(_handle,_freq);
@@ -130,11 +136,16 @@ public class WordItem implements Comparable<WordItem>,Cloneable{
 	}
 
 	@Override
-	public Object clone() throws CloneNotSupportedException {
-		WordItem item = (WordItem) super.clone();
-		item.setPosList(new ArrayList<POS>());
-		for (POS pos : posList) {
-			item.addPos((POS)pos.clone());
+	public Object clone() {
+		WordItem item;
+		try {
+			item = (WordItem) super.clone();
+			item.setPosList(new ArrayList<POS>());
+			for (POS pos : posList) {
+				item.addPos((POS)pos.clone());
+			}
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(e.getMessage(),e);
 		}
 		
 		return item;
