@@ -235,21 +235,14 @@ public class NShortSeg {
 		
 		//修改词语网络图，增加未登录词
 		WordItem personItem=dic.searchWord(WordItem.UNKNOWN_PERSON);
+		personItem.getPosList().get(0).setTag(POSTag.NOUN_PERSON);	
 		for (String pattern : patterns) {
 			int k=-pattern.length();
 			while((k=patternStr.indexOf(pattern,k+pattern.length()))!=-1){
 				SegNode segNode=new SegNode();
 				segNode.setPathValue(Double.MAX_VALUE);
 				String srcWord="";
-				WordItem item=null;
-				try {
-					//需要克隆一份，否则这句话中出现多个人名会出错
-					item = (WordItem) personItem.clone();
-					item.getPosList().get(0).setTag(POSTag.NOUN_PERSON);					
-				} catch (CloneNotSupportedException e) {
-					throw new SegmentException(e.getMessage(),e);
-				}
-				segNode.setWordItem(item);
+				segNode.setWordItem(personItem);
 				segNode.addLink(new SegLink(0,segNodes.get(k+pattern.length())));
 				segNodes.get(k-1).addLink(new SegLink(0,segNode));
 				
@@ -298,7 +291,7 @@ public class NShortSeg {
 		TrieTreeDictionary biDic=TxtDicFileLoader.loadDic("dic/bigramDict.dct");
 		NShortSeg nsg=new NShortSeg(dic,biDic);
 		log.info("loading cost is "+(System.currentTimeMillis()-startTime));
-		List<WordItem> result=nsg.segSentence("曾佳说的确实有理");		
+		List<WordItem> result=nsg.segSentence("曾佳对刘岗说的确实有理");		
 		
 		log.info("total cost is "+(System.currentTimeMillis()-startTime));
 		
@@ -306,15 +299,15 @@ public class NShortSeg {
 			System.out.print(wordItem.getWord()+"/");
 		}
 		
-//		TrieTreeDictionary unknownDic=TxtDicFileLoader.loadDic("dic/nr.dct");
-//		ContextStat cs=new ContextStat();
-//		cs.load("dic/nr.ctx");
+		TrieTreeDictionary unknownDic=TxtDicFileLoader.loadDic("dic/nr.dct");
+		ContextStat cs=new ContextStat();
+		cs.load("dic/nr.ctx");
 		
 		ContextStat ncs=new ContextStat();
 		ncs.load("dic/lexical.ctx");
 		
 		
-//		PosTagger posTagger=new PosTagger(dic,unknownDic,cs);
+		PosTagger posTagger=new PosTagger(dic,unknownDic,cs);
 		
 		PosTagger lexPosTagger=new PosTagger(dic,null,ncs);
 		

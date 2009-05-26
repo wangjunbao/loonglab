@@ -8,6 +8,8 @@ import org.ictclas4j.utility.Utility;
 
 
 public class SentenceSeg {
+
+	
 	private String src;
 	private ArrayList<Sentence> sens;
 	

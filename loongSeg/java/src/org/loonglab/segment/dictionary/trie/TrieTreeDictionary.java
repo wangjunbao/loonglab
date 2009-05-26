@@ -16,7 +16,7 @@ public class TrieTreeDictionary {
 	
 	static Log log = LogFactory.getLog(TrieTreeDictionary.class);
 	
-	TrieNode[] dicWords=new TrieNode[7000];
+	TrieNode[] dicWords=new TrieNode[35000];//支持所有GBK字符
 	
 	public TrieTreeDictionary(WordItem[] wordItems) {
 		buildTrieTree(wordItems);
@@ -38,7 +38,7 @@ public class TrieTreeDictionary {
 
 	private void addWordItem(WordItem wordItem) {
 		
-		//TODO 相同词，不同词性的导入
+		//TODO 相同词，不同词性的导入，可以采用重新装载的方法
 		String wordStr=wordItem.getWord();
 		
 		TrieNode commonNode=search(wordStr);
@@ -127,7 +127,7 @@ public class TrieTreeDictionary {
 		
 		if(tn!=null){
 			if(word.length()==1)
-				return tn.getWordItem();
+				return (WordItem) tn.getWordItem().clone();
 			
 			for (int i = 1; i < word.length(); i++) {
 				char c=word.charAt(i);
@@ -136,7 +136,10 @@ public class TrieTreeDictionary {
 					return null;
 				}
 				else if(i==word.length()-1){
-					return node.getWordItem();
+					if(node.getWordItem()!=null)
+						return (WordItem) node.getWordItem().clone();
+					else
+						return null;
 				}
 				else
 					tn=node;
@@ -193,7 +196,7 @@ public class TrieTreeDictionary {
 			TrieNode tn=dicWords[firstKey];
 			if(tn!=null){
 				if(tn.getWordItem()!=null)
-					resultList.add(tn.getWordItem());
+					resultList.add((WordItem) tn.getWordItem().clone());
 				
 				for (int i = 1; i < sentence.length(); i++) {
 					char c=sentence.charAt(i);
@@ -202,12 +205,17 @@ public class TrieTreeDictionary {
 						break;
 					
 					if(subNode.getWordItem()!=null)
-						resultList.add(subNode.getWordItem());
+						resultList.add((WordItem)subNode.getWordItem().clone());
 					
 					tn=subNode;
 				}
 				
 			}
+			else{
+				WordItem item=new WordItem(firstChar+"");
+				resultList.add(item);
+			}
+			
 		}
 		
 		return resultList;
@@ -260,7 +268,7 @@ public class TrieTreeDictionary {
 			
 			log.info("cost time is "+(System.currentTimeMillis()-startTime));
 			
-			String sentence="他说的abc确实有理";
+			String sentence="他说的abc确实有理";
 			
 			for (int i = 0; i < sentence.length(); i++) {
 				String subSen=sentence.substring(i);

@@ -10,6 +10,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ictclas4j.bean.SegResult;
 import org.ictclas4j.utility.Utility;
+import org.loonglab.MyBeanUtil;
+import org.loonglab.segment.dictionary.WordItem;
+import org.loonglab.segment.util.ChineseEncoder;
 
 public class SegTagTest extends TestCase {
 	
@@ -34,7 +37,17 @@ public class SegTagTest extends TestCase {
 	}
 	
 	public void testUtility() throws Exception {
-		log.info("===="+Utility.CC_ID("/"));
+		//log.info("===="+Utility.CC_ID("/"));
+		log.info("====="+ChineseEncoder.hashCode('þ '));
+	}
+	
+	public void testClone(){
+		WordItem i1=new WordItem("haha");
+		WordItem i2=(WordItem) i1.clone();
+		//i2=i1;
+		i2.setWord("xixi");
+		
+		log.info(i1.getWord()+","+i2.getWord());
 	}
 
 }
