@@ -17,7 +17,8 @@ public class SentenceSeg {
 
 	public static final String SEPERATOR_E_SUB_SENTENCE = ",()\"'";
 
-	public static final String SEPERATOR_LINK = "\n\r 　";
+	//public static final String SEPERATOR_LINK = "\n\r 　";
+	public static final String SEPERATOR_LINK = "\n\r";
 	
 	private String src;
 	private List<Sentence> sens;
@@ -43,35 +44,17 @@ public class SentenceSeg {
 				char ss=src.charAt(i);
 				// 如果是分隔符，比如回车换行/逗号等
 				if (SEPERATOR_C_SENTENCE.indexOf(ss) != -1
-						|| SEPERATOR_LINK.indexOf(ss) != -1
-						|| SEPERATOR_C_SUB_SENTENCE.indexOf(ss) != -1
-						|| SEPERATOR_E_SUB_SENTENCE.indexOf(ss) != -1) {
-					// 如果不是回车换行和空格
-					if (SEPERATOR_LINK.indexOf(ss) == -1)
+						|| SEPERATOR_LINK.indexOf(ss) != -1) {
+					
+					if(SEPERATOR_C_SENTENCE.indexOf(ss) != -1){
+						//如果是句末分隔符，换行符忽略掉
 						s1 += ss;
-					// 断句
-					if (s1.length() > 0 && !WordItem.SENTENCE_BEGIN.equals(s1)) {
-						if (SEPERATOR_C_SUB_SENTENCE.indexOf(ss) == -1
-								&& SEPERATOR_E_SUB_SENTENCE
-										.indexOf(ss) == -1)
-							s1 += WordItem.SENTENCE_END;
-
+						s1 += WordItem.SENTENCE_END;
 						result.add(new Sentence(s1, true));
-						s1 = "";
+						s1 = WordItem.SENTENCE_BEGIN;
 					}
-
-					// 是回车换行符或空格，则不需要进行分析处理
-					if (SEPERATOR_LINK.indexOf(ss) != -1) {
-						result.add(new Sentence(ss+""));
-						s1 = WordItem.SENTENCE_BEGIN;
-
-					} else if (SEPERATOR_C_SENTENCE.indexOf(ss) != -1
-							|| SEPERATOR_E_SENTENCE.indexOf(ss) != -1)
-						s1 = WordItem.SENTENCE_BEGIN;
-					else s1 = WordItem.SENTENCE_BEGIN;
-//						s1 = ss;
-
-				} else
+				} 
+				else
 					s1 += ss;
 			}
 
