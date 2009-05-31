@@ -153,10 +153,16 @@ public class WordItem implements Comparable<WordItem>,Cloneable{
 	}
 
 	public POS getPos(){
-		for (POS pos : posList) {
-			if(pos.isBest())
-				return pos;
+		if(posList.size()==1){
+			return posList.get(0);
 		}
+		else{
+			for (POS pos : posList) {
+				if(pos.isBest())
+					return pos;
+			}
+		}
+		
 		
 		return null;
 	}

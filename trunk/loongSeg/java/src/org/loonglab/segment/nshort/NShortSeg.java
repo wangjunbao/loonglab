@@ -233,12 +233,12 @@ public class NShortSeg {
 			segNodes.add(segNode);
 		}
 		
-		//修改词语网络图，增加未登录词
-		WordItem personItem=dic.searchWord(WordItem.UNKNOWN_PERSON);
-		personItem.getPosList().get(0).setTag(POSTag.NOUN_PERSON);	
+		//修改词语网络图，增加未登录词			
 		for (String pattern : patterns) {
 			int k=-pattern.length();
 			while((k=patternStr.indexOf(pattern,k+pattern.length()))!=-1){
+				WordItem personItem=dic.searchWord(WordItem.UNKNOWN_PERSON);
+				personItem.getPosList().get(0).setTag(POSTag.NOUN_PERSON);
 				SegNode segNode=new SegNode();
 				segNode.setPathValue(Double.MAX_VALUE);
 				String srcWord="";
@@ -291,7 +291,7 @@ public class NShortSeg {
 		TrieTreeDictionary biDic=TxtDicFileLoader.loadDic("dic/bigramDict.dct");
 		NShortSeg nsg=new NShortSeg(dic,biDic);
 		log.info("loading cost is "+(System.currentTimeMillis()-startTime));
-		List<WordItem> result=nsg.segSentence("曾佳对刘岗说的确实有理");		
+		List<WordItem> result=nsg.segSentence("三星SHX-123型号的手机");		
 		
 		log.info("total cost is "+(System.currentTimeMillis()-startTime));
 		
@@ -299,18 +299,23 @@ public class NShortSeg {
 			System.out.print(wordItem.getWord()+"/");
 		}
 		
-		TrieTreeDictionary unknownDic=TxtDicFileLoader.loadDic("dic/nr.dct");
-		ContextStat cs=new ContextStat();
-		cs.load("dic/nr.ctx");
+		TrieTreeDictionary unknownDic=TxtDicFileLoader.loadDic("dic/nl.dct");
+		UnkownWordSeg seg=new UnkownWordSeg(unknownDic);
 		
-		ContextStat ncs=new ContextStat();
-		ncs.load("dic/lexical.ctx");
+		List<WordItem> finalResult=seg.segNumLetter(result);
 		
-		
-		PosTagger posTagger=new PosTagger(dic,unknownDic,cs);
-		
-		PosTagger lexPosTagger=new PosTagger(dic,null,ncs);
-		
+//		TrieTreeDictionary unknownDic=TxtDicFileLoader.loadDic("dic/nr.dct");
+//		ContextStat cs=new ContextStat();
+//		cs.load("dic/nr.ctx");
+//		
+//		ContextStat ncs=new ContextStat();
+//		ncs.load("dic/lexical.ctx");
+//		
+//		
+//		PosTagger posTagger=new PosTagger(dic,unknownDic,cs);
+//		
+//		PosTagger lexPosTagger=new PosTagger(dic,null,ncs);
+//		
 //		List<TagNode> tagNodes=posTagger.posUnkownTag(result);
 //		List<WordItem> secResult=nsg.segUnkownWord(tagNodes);
 //		
@@ -322,9 +327,9 @@ public class NShortSeg {
 //			System.out.print(word+"/");
 //		}
 		
-		List<WordItem> finalResult=lexPosTagger.posTag(result);
+		//List<WordItem> finalResult=lexPosTagger.posTag(secResult);
 		
-		log.info(outputResult(finalResult));
+		//log.info(outputResult(finalResult));
 
 	}
 	
