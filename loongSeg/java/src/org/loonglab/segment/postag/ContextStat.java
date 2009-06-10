@@ -91,7 +91,7 @@ public class ContextStat {
 	public int getFreq(int key, int symbol) {
 
 		int index = Arrays.binarySearch(symbolTable,symbol);
-		if (index == -1)// error finding the symbol
+		if (index <0)// error finding the symbol
 			return 0;
 
 		// Add the frequency
@@ -110,7 +110,7 @@ public class ContextStat {
 
 
 		// return a lower value, not 0 to prevent data sparse
-		if (tc == null || curIndex == -1 || prevIndex == -1
+		if (tc == null || curIndex <0 || prevIndex <0
 				|| tc.getContextArray()[prevIndex][curIndex] == 0
 				|| tc.getTagFreq()[prevIndex] == 0)
 			return 0.000001;

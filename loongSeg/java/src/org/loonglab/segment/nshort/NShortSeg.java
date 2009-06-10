@@ -1,15 +1,19 @@
 package org.loonglab.segment.nshort;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.loonglab.segment.SegmentException;
 import org.loonglab.segment.dictionary.WordItem;
 import org.loonglab.segment.dictionary.loader.TxtDicFileLoader;
 import org.loonglab.segment.dictionary.trie.TrieTreeDictionary;
@@ -36,6 +40,8 @@ public class NShortSeg {
 	 */
 	TrieTreeDictionary biDic;
 	
+	int tt=0;
+	
 	
 	
 	public NShortSeg(TrieTreeDictionary dic,TrieTreeDictionary biDic) {
@@ -46,6 +52,8 @@ public class NShortSeg {
 
 
 	public List<WordItem> segSentence(String sentence){
+		
+		long startTime=System.currentTimeMillis();
 		//1、构造词语网络图
 		
 		//先构造初始节点
@@ -63,6 +71,9 @@ public class NShortSeg {
 		Queue<SegNode> nodeQueue=new LinkedList<SegNode>();
 		nodeQueue.add(firstNode);
 		
+		//保存每次全切分的结果，防止重复切分
+		Map<Integer, List<SegNode>> nodeMap=new HashMap<Integer, List<SegNode>>();
+		
 		while(!nodeQueue.isEmpty()){
 			SegNode parentNode=nodeQueue.poll();
 			if(parentNode.getNextIndex()==sentence.length()){
@@ -70,19 +81,32 @@ public class NShortSeg {
 				
 			}
 			else{
-				String subSen=sentence.substring(parentNode.getNextIndex());
-				
-				List<WordItem> results=dic.allSplit(subSen);
-				
-				for (WordItem wordItem : results) {
-					SegNode node=new SegNode();
-					node.setPathValue(Double.MAX_VALUE);
-					node.setWordItem(wordItem);
-					node.setNextIndex(parentNode.getNextIndex()+wordItem.getWord().length());
-					parentNode.addLink(new SegLink(0,node));
-					
-					nodeQueue.add(node);
+				List<SegNode> nodeResult=nodeMap.get(parentNode.getNextIndex());
+				if(nodeResult==null){
+					String subSen=sentence.substring(parentNode.getNextIndex());
+					//log.debug("index is "+parentNode.getNextIndex());
+					tt++;
+					List<WordItem> results=dic.allSplit(subSen);
+					List<SegNode> nodeList=new ArrayList<SegNode>();
+					for (WordItem wordItem : results) {
+						SegNode node=new SegNode();
+						node.setPathValue(Double.MAX_VALUE);
+						node.setWordItem(wordItem);
+						node.setNextIndex(parentNode.getNextIndex()+wordItem.getWord().length());
+						nodeList.add(node);
+						
+						parentNode.addLink(new SegLink(0,node));
+						
+						nodeQueue.add(node);
+					}
+					nodeMap.put(parentNode.getNextIndex(), nodeList);
 				}
+				else{
+					for (SegNode segNode : nodeResult) {
+						parentNode.addLink(new SegLink(0,segNode));
+					}
+				}				
+
 			}
 			
 			
@@ -95,17 +119,21 @@ public class NShortSeg {
 //				sn.addLink(new SegLink(0,node));
 //			}
 		}
-		
+		//log.debug("build first tree cost is "+(System.currentTimeMillis()-startTime));
 
 		
 		//更新各条边的权值
 		
 		calcLinkValue(firstNode);
-		print(firstNode);
+		//print(firstNode);
+		
+		//log.debug("update value cost is "+(System.currentTimeMillis()-startTime));
+		//log.debug("tt is "+tt);
 		
 		//2、dijkstra算法
 		List<WordItem> path = getPath(firstNode);
 		
+		//log.debug("dijkstra cost is "+(System.currentTimeMillis()-startTime));
 		
 		return path;
 	}
@@ -118,6 +146,10 @@ public class NShortSeg {
 		
 		SegNode sn=open.get(0);
 		
+		long t1=0;
+		long t2=0;
+		
+		long start1=System.currentTimeMillis();
 		
 		while(!sn.getWordItem().getWord().equals(WordItem.SENTENCE_END)&&!open.isEmpty()){
 			sn=open.get(0);
@@ -125,9 +157,11 @@ public class NShortSeg {
 			open.remove(sn);
 			
 			List<SegLink> links=sn.getLinks();
+			long start=System.currentTimeMillis();
 			for (SegLink segLink : links) {
-				if(segLink.getTarget().getPathValue()>segLink.getValue()){
-					segLink.getTarget().setPathValue(segLink.getValue());
+				double newPathValue=sn.getPathValue()+segLink.getValue();
+				if(segLink.getTarget().getPathValue()>newPathValue){
+					segLink.getTarget().setPathValue(newPathValue);
 					segLink.getTarget().setPathParent(sn);
 				}
 					
@@ -137,6 +171,9 @@ public class NShortSeg {
 				}
 			}
 			
+			t1=t1+(System.currentTimeMillis()-start);
+			
+			start=System.currentTimeMillis();
 			
 			//排序
 			Collections.sort(open,new Comparator<SegNode>(){
@@ -151,7 +188,13 @@ public class NShortSeg {
 				}
 				
 			});
+			
+			t2=t2+(System.currentTimeMillis()-start);
 		}
+		
+//		log.debug("t1 is "+t1);
+//		log.debug("t2 is "+t2);
+//		log.debug("cost is "+(System.currentTimeMillis()-start1));
 		
 		List<WordItem> path=new ArrayList<WordItem>();
 
@@ -167,12 +210,17 @@ public class NShortSeg {
 		return path;
 	}
 	
-	private void calcLinkValue(SegNode firstNode) {
+	private void calcLinkValue(SegNode firstNode) {	
+		
 		List<SegLink> links=firstNode.getLinks();
 		
 		String wordStr=firstNode.getWordItem().getWord()+"@";
 		for (SegLink segLink : links) {
+			if(segLink.getValue()!=0)
+				continue;
+			tt++;
 			String word=wordStr+segLink.getTarget().getWordItem().getWord();
+			//log.debug(word);
 			WordItem wi=biDic.searchWord(word);
 			//词典中存在两词之间的频率统计
 			double temp = (double) 1 / MAX_FREQUENCE;
@@ -285,36 +333,64 @@ public class NShortSeg {
 		return -1;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception{
 		long startTime=System.currentTimeMillis();
 		TrieTreeDictionary dic=TxtDicFileLoader.loadDic("dic/coreDict.dct");
 		TrieTreeDictionary biDic=TxtDicFileLoader.loadDic("dic/bigramDict.dct");
 		NShortSeg nsg=new NShortSeg(dic,biDic);
+		ContextStat ncs=new ContextStat();
+		ncs.load("dic/lexical.ctx");
+		
+		
+		//PosTagger posTagger=new PosTagger(dic,unknownDic,cs);
+		
+		PosTagger lexPosTagger=new PosTagger(dic,null,ncs);
+		BufferedReader reader=new BufferedReader(new InputStreamReader(new FileInputStream("test.txt"),"gbk"));
+		StringBuffer text=new StringBuffer();
+		String line=reader.readLine();
+		while(line!=null){
+			text.append(line);
+			line=reader.readLine();
+		}
+		reader.close();
 		log.info("loading cost is "+(System.currentTimeMillis()-startTime));
-		List<WordItem> result=nsg.segSentence("三星SHX-123型号的手机");		
+		
+		
+		
+		
+		//String content=TextUtil.removeHtmlTag(text.toString());
+		SentenceSeg senSeg=new SentenceSeg(text.toString());
+		List<Sentence> senList=senSeg.getSens();
+		
+		for (Sentence sentence : senList) {
+			//log.debug(sentence.getContent());
+			List<WordItem> result=nsg.segSentence(sentence.getContent());
+//			for (WordItem wordItem : result) {
+//				System.out.print(wordItem.getWord()+"/");
+//			}
+//			
+//			System.out.println("");
+		}
+		
 		
 		log.info("total cost is "+(System.currentTimeMillis()-startTime));
 		
-		for (WordItem wordItem : result) {
-			System.out.print(wordItem.getWord()+"/");
-		}
 		
-		TrieTreeDictionary unknownDic=TxtDicFileLoader.loadDic("dic/nl.dct");
-		UnkownWordSeg seg=new UnkownWordSeg(unknownDic);
 		
-		List<WordItem> finalResult=seg.segNumLetter(result);
+		
+		
+		
+		
+//		TrieTreeDictionary unknownDic=TxtDicFileLoader.loadDic("dic/nl.dct");
+//		UnkownWordSeg seg=new UnkownWordSeg(unknownDic);
+//		
+//		List<WordItem> nResult=seg.segNumLetter(result);
 		
 //		TrieTreeDictionary unknownDic=TxtDicFileLoader.loadDic("dic/nr.dct");
 //		ContextStat cs=new ContextStat();
 //		cs.load("dic/nr.ctx");
 //		
-//		ContextStat ncs=new ContextStat();
-//		ncs.load("dic/lexical.ctx");
-//		
-//		
-//		PosTagger posTagger=new PosTagger(dic,unknownDic,cs);
-//		
-//		PosTagger lexPosTagger=new PosTagger(dic,null,ncs);
+		
 //		
 //		List<TagNode> tagNodes=posTagger.posUnkownTag(result);
 //		List<WordItem> secResult=nsg.segUnkownWord(tagNodes);
@@ -327,7 +403,11 @@ public class NShortSeg {
 //			System.out.print(word+"/");
 //		}
 		
-		//List<WordItem> finalResult=lexPosTagger.posTag(secResult);
+		
+		
+		//List<WordItem> finalResult=lexPosTagger.posTag(result);
+		
+		//log.info("including posTag cost is "+(System.currentTimeMillis()-startTime));
 		
 		//log.info(outputResult(finalResult));
 

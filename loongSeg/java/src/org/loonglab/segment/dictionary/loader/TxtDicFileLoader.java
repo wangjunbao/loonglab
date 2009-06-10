@@ -8,11 +8,9 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ictclas4j.bean.TagContext;
 import org.loonglab.segment.SegmentException;
 import org.loonglab.segment.dictionary.WordItem;
 import org.loonglab.segment.dictionary.trie.TrieTreeDictionary;
-import org.loonglab.segment.postag.ContextStat;
 
 public class TxtDicFileLoader {
 	

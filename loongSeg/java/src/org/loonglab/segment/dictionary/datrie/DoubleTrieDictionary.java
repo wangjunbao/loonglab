@@ -1,4 +1,4 @@
-package org.loonglab.segment.dictionary.impl;
+package org.loonglab.segment.dictionary.datrie;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
