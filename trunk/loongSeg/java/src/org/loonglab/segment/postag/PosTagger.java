@@ -5,9 +5,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ictclas4j.bean.SegNode;
-import org.ictclas4j.utility.Utility;
-import org.loonglab.segment.SegmentException;
 import org.loonglab.segment.dictionary.POS;
 import org.loonglab.segment.dictionary.WordItem;
 import org.loonglab.segment.dictionary.trie.TrieTreeDictionary;
@@ -114,6 +111,7 @@ public class PosTagger {
 
 
 		for (int i = tagNodes.size() - 1, j = 0; i >= 0; i--) {
+			//log.debug(tagNodes.get(i).getWordItem());
 			List<PosLink> links = tagNodes.get(i).getLinks();
 			PosLink posLink = links.get(j);
 			posLink.getPos().setBest(true);

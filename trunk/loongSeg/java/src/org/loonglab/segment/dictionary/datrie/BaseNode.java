@@ -1,4 +1,4 @@
-package org.loonglab.segment.dictionary.impl;
+package org.loonglab.segment.dictionary.datrie;
 
 import org.loonglab.segment.dictionary.WordItem;
 import org.loonglab.segment.util.ChineseEncoder;

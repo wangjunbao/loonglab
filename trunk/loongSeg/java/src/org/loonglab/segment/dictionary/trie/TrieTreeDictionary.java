@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.loonglab.segment.SegmentException;
 import org.loonglab.segment.dictionary.WordItem;
+import org.loonglab.segment.postag.POSTag;
 import org.loonglab.segment.util.ChineseEncoder;
 
 public class TrieTreeDictionary {
@@ -212,7 +213,7 @@ public class TrieTreeDictionary {
 				
 			}
 			else{
-				WordItem item=new WordItem(firstChar+"");
+				WordItem item=new WordItem(firstChar+"",POSTag.UNKNOWN,0);
 				resultList.add(item);
 			}
 			
@@ -241,6 +242,9 @@ public class TrieTreeDictionary {
 			int maxWordLength=0;
 			WordItem lastWordItem=null;
 			while((wordStr=br.readLine())!=null){
+				if(wordStr.contains("！")){
+					log.debug("wordStr is "+wordStr);
+				}
 				String[] words=wordStr.split(" ");
 				//注意，这里要求字典文件是排好序的
 				if(lastWordItem!=null&&lastWordItem.getWord().equals(words[0])){					
@@ -268,7 +272,7 @@ public class TrieTreeDictionary {
 			
 			log.info("cost time is "+(System.currentTimeMillis()-startTime));
 			
-			String sentence="他说的abc确实有理";
+			String sentence="！";
 			
 			for (int i = 0; i < sentence.length(); i++) {
 				String subSen=sentence.substring(i);

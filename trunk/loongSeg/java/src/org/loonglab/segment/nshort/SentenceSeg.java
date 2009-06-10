@@ -38,20 +38,22 @@ public class SentenceSeg {
 
 		if (src != null) {
 			result = new ArrayList<Sentence>();
-			String s1 = WordItem.SENTENCE_BEGIN;
+			//String s1 = WordItem.SENTENCE_BEGIN;
+			String s1 = "";
 
 			for (int i = 0; i < src.length(); i++) {
 				char ss=src.charAt(i);
 				// 如果是分隔符，比如回车换行/逗号等
 				if (SEPERATOR_C_SENTENCE.indexOf(ss) != -1
-						|| SEPERATOR_LINK.indexOf(ss) != -1) {
+						|| SEPERATOR_LINK.indexOf(ss) != -1||SEPERATOR_C_SUB_SENTENCE.indexOf(ss)!=-1) {
 					
-					if(SEPERATOR_C_SENTENCE.indexOf(ss) != -1){
+					if(SEPERATOR_C_SENTENCE.indexOf(ss) != -1||SEPERATOR_C_SUB_SENTENCE.indexOf(ss)!=-1){
 						//如果是句末分隔符，换行符忽略掉
 						s1 += ss;
-						s1 += WordItem.SENTENCE_END;
+						//s1 += WordItem.SENTENCE_END;
 						result.add(new Sentence(s1, true));
-						s1 = WordItem.SENTENCE_BEGIN;
+						//s1 = WordItem.SENTENCE_BEGIN;
+						s1 = "";
 					}
 				} 
 				else
@@ -59,7 +61,7 @@ public class SentenceSeg {
 			}
 
 			if (s1.length() > 0 && !WordItem.SENTENCE_BEGIN.equals(s1)) {
-				s1 += WordItem.SENTENCE_END;
+				//s1 += WordItem.SENTENCE_END;
 				result.add(new Sentence(s1, true));
 			}
 		}
