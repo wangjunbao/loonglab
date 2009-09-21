@@ -13,49 +13,107 @@ public class StIndex {
 	
 	@PrimaryKey
 	@Persistent(valueStrategy=IdGeneratorStrategy.IDENTITY)
-	private Long Id;
+	private Long id;
 	
 	/**
 	 * 发布日期
 	 */
+	@Persistent
 	private Date pubDate;
+	
+	/**
+	 * 指数时间
+	 */
+	@Persistent
+	private String indexDate;
 	
 	/**
 	 * 名称
 	 */
+	@Persistent
 	private String name;
 	
+	/**
+	 * 收盘价格
+	 */
 	@Persistent
 	private double closing;
 	
+	/**
+	 * 较昨日涨跌
+	 */
+	@Persistent
 	private double upDown;
 	
+	/**
+	 * 较昨日涨跌百分比
+	 */
+	@Persistent
 	private double upDownPercent;
 	
+	/**
+	 * 今年涨跌
+	 */
+	@Persistent
 	private double yearUpDown;
 	
+	/**
+	 * 今年涨跌百分比
+	 */
+	@Persistent
 	private double yearUpDownPercent;
 	
+	/**
+	 * 较昨日成交额涨跌
+	 */
+	@Persistent
 	private double turnOverUpDown;
 	
+	/**
+	 * 较昨日成交额涨跌百分比
+	 */
+	@Persistent
 	private double turnOverUpDownPercent;	
 		
+	/**
+	 * 静态市盈率
+	 */
 	@Persistent
 	private double staticPE;
 	
+	/**
+	 * 滚动市盈率
+	 */
+	@Persistent
 	private double dynaPE;	
 	
+	/**
+	 * 市净率
+	 */
 	@Persistent
 	private double PB;
 	
+	/**
+	 * 去年底市盈率
+	 */
+	@Persistent
 	private double lastYearStaticPE;
+	/**
+	 * 去年底滚动市盈率
+	 */
+	@Persistent
 	private double lastYearDynaPE;
+	/**
+	 * 去年底市净率
+	 */
+	@Persistent
 	private double lastYearPB;
+	
 	public Long getId() {
-		return Id;
+		return id;
 	}
 	public void setId(Long id) {
-		Id = id;
+		this.id = id;
 	}
 	public Date getPubDate() {
 		return pubDate;
@@ -147,8 +205,18 @@ public class StIndex {
 	public void setLastYearPB(double lastYearPB) {
 		this.lastYearPB = lastYearPB;
 	}
+	public String getIndexDate() {
+		return indexDate;
+	}
+	public void setIndexDate(String indexDate) {
+		this.indexDate = indexDate;
+	}
 	
-	
+	@Override
+	public String toString() {
+		String result= id+","+indexDate+","+name+","+closing+","+upDown+","+upDownPercent+","+yearUpDown+","+yearUpDownPercent;
+		return result;
+	}
 	
 	
 }
