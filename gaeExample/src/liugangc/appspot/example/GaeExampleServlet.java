@@ -1,20 +1,21 @@
 package liugangc.appspot.example;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
+import java.util.Date;
+import java.util.List;
 
 import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.xml.sax.InputSource;
 
 import com.google.appengine.repackaged.org.apache.commons.logging.Log;
 import com.google.appengine.repackaged.org.apache.commons.logging.LogFactory;
@@ -27,10 +28,11 @@ public class GaeExampleServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		
 		String urlStr="http://www.csindex.com.cn/sseportal/ps/zhs/hqjt/csi/indexinfo.xls";
-		log.info(urlStr);
-		System.out.println("===="+urlStr);
 		
 		try {
+			
+			PersistenceManager pm = PMF.get().getPersistenceManager();
+			
 			
             URL url = new URL(urlStr);
             InputStream is=url.openStream();
@@ -38,42 +40,57 @@ public class GaeExampleServlet extends HttpServlet {
 			HSSFWorkbook wb = new HSSFWorkbook(fs);
 			HSSFSheet sheet = wb.getSheetAt(0);
 			//System.out.println(sheet.getLastRowNum());
+			
+			String indexDate=sheet.getRow(1).getCell(3).getRichStringCellValue().getString();
+			indexDate=indexDate.substring(1,indexDate.length()-1);
+			System.out.println(indexDate);
 			for (int i = 4; i < 11 ; i++) {
 				HSSFRow row = sheet.getRow(i);
-				for (int j = 0; j <= 13; j++) {
-					HSSFCell cell=row.getCell(j);
-					
-					if(cell.getCellType()==HSSFCell.CELL_TYPE_NUMERIC)
-						System.out.println(cell.getNumericCellValue());
-					else if(cell.getCellType()==HSSFCell.CELL_TYPE_STRING)
-						System.out.println(cell.getRichStringCellValue().getString());
-						
-					//System.out.println(cell.getCellType());
-				}
 				
+				StIndex index=new StIndex();
+				index.setPubDate(new Date());
+				index.setIndexDate(indexDate);
+				index.setName(row.getCell(0).getRichStringCellValue().getString());
+				index.setClosing(row.getCell(1).getNumericCellValue());
+				index.setUpDown(row.getCell(2).getNumericCellValue());
+				index.setUpDownPercent(row.getCell(3).getNumericCellValue());
+				index.setYearUpDown(row.getCell(4).getNumericCellValue());
+				index.setYearUpDownPercent(row.getCell(5).getNumericCellValue());
+				index.setTurnOverUpDown(row.getCell(6).getNumericCellValue());
+				index.setTurnOverUpDownPercent(row.getCell(7).getNumericCellValue());
+				index.setStaticPE(row.getCell(8).getNumericCellValue());
+				index.setDynaPE(row.getCell(9).getNumericCellValue());
+				index.setPB(row.getCell(10).getNumericCellValue());
+				index.setLastYearStaticPE(row.getCell(11).getNumericCellValue());
+				index.setLastYearDynaPE(row.getCell(12).getNumericCellValue());
+				index.setLastYearPB(row.getCell(13).getNumericCellValue());
+				
+				
+			    pm.makePersistent(index);
+				
+		
 				//log.info("=====================");
 			}
 			
 			is.close();
 			
 			
+			//将写入的数据读出来
+//			Query query = pm.newQuery("select from StIndex order by id desc " );
+//			List<StIndex> results = (List<StIndex>) query.execute();
+//			
+//			
+//			OutputStream os=resp.getOutputStream();
+//			for (StIndex stIndex : results) {
+//				os.write(stIndex.toString().getBytes("utf-8"));
+//			}
+//			
+//			os.flush();
 
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         }
 		
-//		StIndex entry=new StIndex();
-//		entry.setIndexNum(3000);
-//		entry.setPb(3.2);
-//		entry.setPe(32.3);
-//		
-//		
-//		PersistenceManager pm = PMF.get().getPersistenceManager();
-//	    pm.makePersistent(entry);
-//		
-//		resp.setContentType("text/plain");
-//		resp.getWriter().println("inser a entry("+entry.getId()+")");
-//		
-//		System.out.println("gaeExampleServlet("+entry.getId()+") end!");
+
 	}
 }
