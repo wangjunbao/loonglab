@@ -1,13 +1,10 @@
 package liugangc.appspot.example;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.Date;
-import java.util.List;
 
 import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,13 +14,10 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
-import com.google.appengine.repackaged.org.apache.commons.logging.Log;
-import com.google.appengine.repackaged.org.apache.commons.logging.LogFactory;
-
 @SuppressWarnings("serial")
 public class GaeExampleServlet extends HttpServlet {
 	
-	static Log log = LogFactory.getLog(GaeExampleServlet.class);
+	//static Log log = LogFactory.getLog(GaeExampleServlet.class);
 	
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		
@@ -88,7 +82,7 @@ public class GaeExampleServlet extends HttpServlet {
 //			os.flush();
 
         } catch (Exception e) {
-            log.error(e.getMessage(),e);
+          //  log.error(e.getMessage(),e);
         }
 		
 
