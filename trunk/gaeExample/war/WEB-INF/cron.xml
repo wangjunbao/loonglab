@@ -2,7 +2,7 @@
 <cronentries>
   <cron>
     <url>/gaeexample</url>
-    <description>every 24 hours</description>
-    <schedule>every 24 hours</schedule>
+    <description>every 4 hours</description>
+    <schedule>every 4 hours</schedule>
   </cron>
 </cronentries>

@@ -3,12 +3,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 
 import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -17,13 +21,12 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 @SuppressWarnings("serial")
 public class GaeExampleServlet extends HttpServlet {
 	
-	//static Log log = LogFactory.getLog(GaeExampleServlet.class);
+	static Log log = LogFactory.getLog(GaeExampleServlet.class);
 	
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		
 		String urlStr="http://www.csindex.com.cn/sseportal/ps/zhs/hqjt/csi/indexinfo.xls";
-		
-		try {
+
 			
 			PersistenceManager pm = PMF.get().getPersistenceManager();
 			
@@ -37,7 +40,16 @@ public class GaeExampleServlet extends HttpServlet {
 			
 			String indexDate=sheet.getRow(1).getCell(3).getRichStringCellValue().getString();
 			indexDate=indexDate.substring(1,indexDate.length()-1);
-			System.out.println(indexDate);
+			
+			//首先判断是否存在
+			Query query = pm.newQuery("select from liugangc.appspot.example.StIndex where indexDate == indexDateParam parameters String indexDateParam" );
+			List<StIndex> results = (List<StIndex>) query.execute(indexDate);
+			log.debug("============="+results.size());
+			if(results.size()>0){
+				return;
+			}
+			
+			//System.out.println(indexDate);
 			for (int i = 4; i < 11 ; i++) {
 				HSSFRow row = sheet.getRow(i);
 				
@@ -81,9 +93,7 @@ public class GaeExampleServlet extends HttpServlet {
 //			
 //			os.flush();
 
-        } catch (Exception e) {
-          //  log.error(e.getMessage(),e);
-        }
+
 		
 
 	}
