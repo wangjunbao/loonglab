@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:application.properties</value>
+				<value>classpath:hibernate.properties</value>				
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="propertyBean" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<list>
+				<value>classpath:application.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="applicationProperties" class="cn.bidlink.common.ApplicationProperties">
+		<property name="prop"><ref bean="propertyBean"/></property>
+	</bean>
+	
+	
+	<bean id="nativeJdbcExtractor" class="org.springframework.jdbc.support.nativejdbc.C3P0NativeJdbcExtractor"/> 
+    
+    <bean id="oracleLobHandler" class="org.springframework.jdbc.support.lob.OracleLobHandler"> 
+        <property name="nativeJdbcExtractor"> 
+            <ref local="nativeJdbcExtractor"/> 
+        </property> 
+    </bean>
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="${hibernate.connection.driver_class}"/>
+		<property name="jdbcUrl" value="${hibernate.connection.url}"/>
+		<property name="user" value="${hibernate.connection.username}"/>
+		<property name="password" value="${hibernate.connection.password}"/>
+		<property name="acquireRetryAttempts"><value>-1</value></property>
+		<property name="acquireRetryDelay"><value>60000</value></property>		
+	</bean>
+	<!-- Hibernate SessionFactory -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+     <!-- property name="entityInterceptor"><ref bean="quoteTableInterceptor"/></property-->
+		<property name="mappingDirectoryLocations">
+			<list>
+				<value>classpath:cn/bidlink</value>
+			</list>
+		</property>
+		<property name="lobHandler"> 
+            <ref bean="oracleLobHandler"/> 
+        </property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.max_fetch_depth">${hibernate.max_fetch_depth}</prop>
+				<prop key="hibernate.jdbc.fetch_size">${hibernate.jdbc.fetch_size}</prop>
+				<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
+				<!-- prop key="hibernate.cache.provider_class">${hibernate.cache.provider_class}</prop> -->
+				<prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- Transaction manager for a single Hibernate SessionFactory (alternative to JTA) -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	<bean id="txProxyTemplate" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" abstract="true">
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	    
+	<!-- 公共的dao -->
+	<bean id="commonDAO" class="cn.bidlink.common.dao.hibernate.CommonDAOHibernate">
+        <property name="sessionFactory"><ref bean="sessionFactory"/></property>
+    </bean> 
+    
+    <bean id="serviceFactory" class="cn.bidlink.common.ServiceFactory">        
+    </bean> 
+    <!-- 
+    <bean id="hibernateInterceptor" class="org.springframework.orm.hibernate3.HibernateInterceptor">
+         <property name="sessionFactory">
+           <ref bean="sessionFactory"/>
+         </property>
+    </bean> 
+    <bean id="jdkBeanNameProxyCreator" 
+	    class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+	    <property name="beanNames">
+	    	<list>
+	    		<value>markEbnewDocService</value>
+	        </list>
+	    </property>
+	    <property name="proxyTargetClass"><value>true</value></property>
+	    <property name="interceptorNames">
+	        <list>
+	            <value>hibernateInterceptor</value>
+	        </list>
+	    </property>
+	</bean>
+	 -->
+
+
+	
+
+</beans>

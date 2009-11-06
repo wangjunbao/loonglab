@@ -1,0 +1,44 @@
+<!--分页，要确认传输的参数包括：待 搜索条件的$url以及 $page -->
+#set( $prePage =  -1 + $page.currentPage )											          
+#set( $nextPage = $page.currentPage+1 )				
+#set( $thisPage = $!page.currentPage )
+#if( $!page.totalRecords < 1 )  #set( $thisPage = 0 ) #end
+
+			<table cellpadding="0" cellspacing="0" class="tbfoot">
+        <tr>
+          <td>&nbsp;&nbsp;共&nbsp;<span>$!page.totalRecords</span>&nbsp;条记录&nbsp;<span>$thisPage/$!page.totalPages</span></td>
+          <td align="right">
+            <table cellpadding="0" cellspacing="0">
+              <tr> 
+                <td align="right">
+                 #if( $page.canToFirst()) <a href="$url&currentPage=1">首页</a>  #else 首页 #end|
+                 #if( $page.canToPre())  <a href="$url&currentPage=$prePage">上一页</a>  #else 上一页 #end |
+                 #if( $page.canToNext()) <a href="$url&currentPage=$nextPage"">下一页</a>#else 下一页 #end | 
+                 #if( $page.canToLast()) <a href="$url&currentPage=$page.totalPages">尾页</a> #else 尾页 #end
+                </td>
+				<form name="jump" method="post" action="$url" onSubmit="return checkUp()">
+                <td>&nbsp;&nbsp;跳转：</td>
+                <td><input name="currentPage" type="text" size="3" class="inputpage">&nbsp;</td>
+                <td><input type="submit" name="Submit2" value="GO" class="inputpagebtn" ></td>
+				</form>
+              </tr>
+            </table>
+          </td>
+          <td align="right">&nbsp;</td>
+          <td align="center">&nbsp;</td>
+        </tr>
+      </table>
+		
+	  <script lanaguage="JavaScript">
+	  	function checkUp(){
+				if( document.jump.currentPage.value =='' ){
+						alert("还没有输入页数");
+						return false;
+				}
+				if(!( document.jump.currentPage.value <= $page.totalPages) ){
+						alert("输入正确的页数");
+						return false;
+				}
+		}
+	  
+	  </script>
