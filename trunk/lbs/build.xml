@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="ebnew" basedir="." default="">
+	<property file="build.properties"/>
+	<property file="src/hibernate.properties"/>
+	<property environment="env"/>
+	<tstamp>
+		<format property="today" pattern="yyyy-MM-dd HH:mm"/>
+	</tstamp>
+
+	<!-- ========================================================= -->
+	<!-- can overwrite by build.properties -->
+	<!-- ========================================================= -->
+	<property name="project.name" value="ebnew"/>
+	<property name="project.title" value="ebnew"/>
+	<property name="project.version" value="2.0"/>
+	<property name="project.vendor" value="Dept. R&amp;D, BIDLINK"/>
+	<property name="debug" value="true"/>
+
+
+	<!-- ========================================================= -->
+	<!-- Setting for directory properties -->
+	<!-- ========================================================= -->
+	<property name="lib.dir" location="${basedir}/lib"/>
+	<property name="xdoclet.lib.dir" location="${basedir}/lib/xdoclet"/>	
+	<property name="build.dir" location="${basedir}/build"/>
+	<property name="src.dir" location="${basedir}/src"/>
+	<property name="build.class.dir" location="${build.dir}/classes"/>
+	<property name="web.dir" location="${basedir}/web"/>
+
+	<!-- ========================================================= -->
+	<!-- Setting for path -->
+	<!-- ========================================================= -->
+	<path id="classpath">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${lib.dir}/servlet">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${lib.dir}/junit">
+					<include name="*.jar"/>
+		</fileset>
+		<pathelement location="${web.dir}/WEB-INF/classes"/>
+	</path>
+	<path id="xdocletpath">
+		<fileset dir="${xdoclet.lib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${lib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<!-- ========================================================= -->
+	<!-- Setting for task -->
+	<!-- ========================================================= -->
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="${lib.dir}/ant-contrib.jar"/>
+		</classpath>
+	</taskdef>
+	<taskdef name="for" classname="net.sf.antcontrib.logic.For">
+		<classpath>
+			<pathelement location="${lib.dir}/ant-contrib.jar"/>
+		</classpath>
+	</taskdef>
+	<taskdef name="xdoclet" classname="org.xdoclet.ant.XDocletTask">
+		<classpath refid="xdocletpath"/>
+	</taskdef>
+	<taskdef name="schemaexport" classname="org.hibernate.tool.hbm2ddl.SchemaExportTask">
+		<classpath refid="classpath"/>
+	</taskdef>
+	<taskdef name="schemaupdate"
+	        classname="org.hibernate.tool.hbm2ddl.SchemaUpdateTask"
+	        classpathref="classpath"/>
+
+	<taskdef name="instrument"
+		         classname="org.hibernate.tool.instrument.cglib.InstrumentTask" classpathref="classpath">
+		     </taskdef>
+	
+
+
+	
+	
+	
+    <!-- ========================================================= -->
+	<!-- target segment -->
+	<!-- ========================================================= -->
+
+	<target name="init">
+			<mkdir dir="${web.dir}/WEB-INF/lib"/>
+		<mkdir dir="${web.dir}/WEB-INF/classes"/>
+			<copy todir="${web.dir}/WEB-INF/lib">
+				<fileset dir="${lib.dir}">
+					<include name="*.jar"/>
+				</fileset>
+			</copy>		
+	</target>
+	<target name="compile" depends="init">
+		<mkdir dir="${web.dir}/WEB-INF/classes"/>
+		<javac encoding="UTF-8" classpathref="classpath" srcdir="${src.dir}" 
+			destdir="${web.dir}/WEB-INF/classes" target="1.5" debug="${debug}" verbose="false"
+			deprecation="false" optimize="false" failonerror="true"/>
+		<copy todir="${web.dir}/WEB-INF/classes">
+					<fileset dir="${src.dir}" excludes="**/*.java"/>
+		</copy>
+		
+		<instrument verbose="true">
+			        <fileset dir="${web.dir}/WEB-INF/classes">
+			           <include name="cn/bidlink/**/model/PubQueue.class"/>
+			        </fileset>
+			     </instrument>
+	</target>
+	<target name="hibernatedoclet" depends="init">
+		<xdoclet encoding="UTF-8">
+			<!-- defines the file handled by xdoclet2 -->
+			<fileset dir="${src.dir}">
+				<include name="cn/bidlink/**/model/**/*.java"/>
+			</fileset>
+			<!-- defines the processing of a plugin -->
+			<component classname="org.xdoclet.plugin.hibernate.HibernateMappingPlugin"
+				destdir="${src.dir}" version="3.0"/>
+		</xdoclet>
+	</target>
+	
+
+
+	<target name="schemaexport" depends="hibernatedoclet">
+		<delete file="${src.dir}/schema.sql"/>
+		<schemaexport quiet="no" text="yes" drop="no" delimiter=";" properties="${src.dir}/hibernate.properties" output="${src.dir}/schema.sql">
+			<fileset dir="${src.dir}">
+				<include name="cn/bidlink/**/*.hbm.xml"/>
+     		</fileset>
+		</schemaexport>
+	</target>
+	
+	<target name="schemaupdate" depends="hibernatedoclet">
+		<schemaupdate
+			        properties="${src.dir}/hibernate.properties"
+			        quiet="no">
+			        <fileset dir="${src.dir}">
+			        	<include name="cn/bidlink/**/*.hbm.xml"/>
+			        </fileset>
+		</schemaupdate>
+	</target>
+	
+	
+	
+	<target name="cvs-update">
+		<cvs cvsRoot=":pserver:liugang@192.168.0.249:/cvsroot/infoprocess"
+		     command="update -d -P"
+		  />
+	</target>
+	<target name="cvs-pass">
+	<cvspass cvsroot=":pserver:liugang@192.168.0.249:/cvsroot/infoprocess"
+		       password="654321"
+		  />
+	</target>
+	
+	
+	<target name="build" depends="cvs-update,clean,hibernatedoclet,compile">
+		
+		</target>
+	
+	<target name="build-109" depends="build">
+		<copy file="dist/109/application.properties" todir="${web.dir}/WEB-INF/classes" overwrite="true"/>
+				<copy file="dist/109/hibernate.properties" todir="${web.dir}/WEB-INF/classes" overwrite="true"/>	
+				<copy file="dist/109/log4j.properties" todir="${web.dir}/WEB-INF/classes" overwrite="true"/>
+
+		</target>
+	
+	<target name="deploy-common" depends="build">
+		<mkdir dir="dist/temp/web"/>
+		<copy todir="dist/temp/web">
+			<fileset dir="${web.dir}"></fileset>
+		</copy>
+	</target>
+	
+
+	
+	<target name="deploy-234" depends="deploy-common">
+		<jar destfile="dist/sms234-${DSTAMP}.war" basedir="dist/temp/web">
+	</jar>
+	</target>
+	
+
+
+	<target name="clean">
+		<delete>
+		    <fileset dir="${src.dir}" includes="**/*.hbm.xml" excludes="**/OrgUserRole.hbm.xml,**/autonomy/**/document*.hbm.xml,**/B*.xml,**/X*.xml"/>
+		  </delete>
+		<!--delete dir="${web.dir}/WEB-INF/classes" excludes="**/*.properties"></delete-->
+
+	</target>
+
+
+
+
+</project>

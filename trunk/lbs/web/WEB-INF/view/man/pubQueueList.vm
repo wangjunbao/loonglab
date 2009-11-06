@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>发布队列表</title>
+<style type="text/css">
+<!--
+.STYLE1 {
+	font-size: x-large;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+<body>
+<p align="center" class="STYLE1">发布队列表</p><a href="pubQueueList.view">刷新</a>
+<form action="publishByMan.view" method="post">
+<table width="100%" border="0">
+<tr>
+<td>信息id：
+	<input name="docId" type="text" value="" size="10"/>
+</td>
+<td>动态地址：
+	<input name="dynaUrl" type="text" value="" size="60"/>
+</td>
+<td>静态地址：
+	<input name="staticUrl" type="text" value="" size="60"/>
+</td>
+<td><input name="button1" value="发布" type="submit" />
+</td>
+</tr>
+</table>
+</form>
+<table width="1200" border="1">
+  <tr>
+    <th width="8%" scope="col">序号</th>
+    <th width="21%" scope="col">动态url</th>
+    <th width="21%" scope="col">静态url</th>
+    <th width="6%" scope="col">状态</th>
+    <th width="6%" scope="col">操作</th>
+    <th width="13%" scope="col">注册时间</th>
+    <th width="8%" scope="col">发布时间</th>
+    <th width="17%" scope="col">错误原因</th>
+  </tr>
+  #foreach( $p in $page.results )
+  <tr align="center">
+    <td>$p.id</td>
+    <td>$p.dynaUrl</td>
+    <td>$p.staticUrl</td>
+    <td>#if($p.status==0)初始
+    #elseif($p.status==1)成功
+    #elseif($p.status==2)正在发布
+    #else
+           失败
+    #end</td>
+    <td>#if($p.operation==1)添加
+    #elseif($p.operation==2)更新
+    #elseif($p.operation==3)删除
+    #end</td>
+    <td>$date.format('yyyy-MM-dd hh:mm',$!p.registerTime) </td>    
+    <td>$!date.format('yyyy-MM-dd hh:mm',$!p.pubTime)</td>
+    <td  align="left">$!p.failReason</td>
+  </tr>
+  #end
+</table>
+#set($url="pubQueueList.view?")
+#parse("common/page.vm")
+</body>
+</html>

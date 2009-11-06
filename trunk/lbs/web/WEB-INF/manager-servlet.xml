@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>	
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				<prop key="/man/*.view">staticManAction</prop>
+			</props>
+		</property>
+	</bean>
+	
+
+	<bean id="staticManAction" class="cn.bidlink.staticpub.web.StaticManAction" >
+		<property name="staticPubService"><ref bean="staticPubService" /></property>
+	</bean>
+
+</beans>
