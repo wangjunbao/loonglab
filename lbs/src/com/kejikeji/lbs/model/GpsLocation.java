@@ -1,12 +1,35 @@
 package com.kejikeji.lbs.model;
 
+/**
+ * @hibernate.class table="l_gps_location" dynamic-update="true"
+ * @author xpdragon
+ *
+ */
 public class GpsLocation {
+	/**
+	 * @hibernate.id generator-class="native"
+	 */
 	private Long id;
+	/**
+	 * @hibernate.property
+	 */
 	private double minLong;
+	/**
+	 * @hibernate.property
+	 */
 	private double minLati;
+	/**
+	 * @hibernate.property
+	 */
 	private double maxLong;
+	/**
+	 * @hibernate.property
+	 */
 	private double maxLati;
 	
+	/**
+	 * @hibernate.many-to-one class="cn.kejikeji.lbs.model.LocationCatalog"
+	 */
 	private LocationCatalog location;
 
 	public Long getId() {

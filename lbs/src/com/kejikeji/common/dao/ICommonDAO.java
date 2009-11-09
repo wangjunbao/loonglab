@@ -1,11 +1,12 @@
-package cn.kejikeji.common.dao;
+package com.kejikeji.common.dao;
 
 import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.LockMode;
 
-import cn.kejikeji.common.dao.hibernate.PageBean;
+import com.kejikeji.common.dao.hibernate.PageBean;
+
 
 /**
  * dao公共类，为了封装Hibernate的具体实现

@@ -11,10 +11,10 @@
 	<!-- ========================================================= -->
 	<!-- can overwrite by build.properties -->
 	<!-- ========================================================= -->
-	<property name="project.name" value="ebnew"/>
-	<property name="project.title" value="ebnew"/>
+	<property name="project.name" value="lbs"/>
+	<property name="project.title" value="lbs"/>
 	<property name="project.version" value="2.0"/>
-	<property name="project.vendor" value="Dept. R&amp;D, BIDLINK"/>
+	<property name="project.vendor" value="kejikeji"/>
 	<property name="debug" value="true"/>
 
 
@@ -116,7 +116,7 @@
 		<xdoclet encoding="UTF-8">
 			<!-- defines the file handled by xdoclet2 -->
 			<fileset dir="${src.dir}">
-				<include name="cn/bidlink/**/model/**/*.java"/>
+				<include name="/**/model/**/*.java"/>
 			</fileset>
 			<!-- defines the processing of a plugin -->
 			<component classname="org.xdoclet.plugin.hibernate.HibernateMappingPlugin"
@@ -130,7 +130,7 @@
 		<delete file="${src.dir}/schema.sql"/>
 		<schemaexport quiet="no" text="yes" drop="no" delimiter=";" properties="${src.dir}/hibernate.properties" output="${src.dir}/schema.sql">
 			<fileset dir="${src.dir}">
-				<include name="cn/bidlink/**/*.hbm.xml"/>
+				<include name="/**/*.hbm.xml"/>
      		</fileset>
 		</schemaexport>
 	</target>

@@ -1,4 +1,4 @@
-package cn.kejikeji.common.dao.hibernate;
+package com.kejikeji.common.dao.hibernate;
 
 import java.io.Serializable;
 import java.util.List;
@@ -6,7 +6,8 @@ import java.util.List;
 import org.hibernate.LockMode;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
-import cn.kejikeji.common.dao.ICommonDAO;
+import com.kejikeji.common.dao.ICommonDAO;
+
 
 public class CommonDAOHibernate extends HibernateDaoSupport implements ICommonDAO {
 

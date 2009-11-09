@@ -1,9 +1,9 @@
-package cn.kejikeji.common;
+package com.kejikeji.common;
 
 import java.util.Properties;
 
 /**
- * 通过此类读取application.properties的属性
+ * 通过此类读取application.properties的属�?
  * @author liugang
  *
  */
@@ -16,7 +16,7 @@ public class ApplicationProperties {
 	public static String SEARCH_INDEX_HOME="search.index.home";
 	
 	/**
-	 * 提供下载的文件，如doc, wmv, mp3 等
+	 * 提供下载的文件，如doc, wmv, mp3 �?
 	 */
 	public static String UPLOAD_FILE_ROOT="upload.file.root";
 	
@@ -31,7 +31,7 @@ public class ApplicationProperties {
 	public static String MAIL_SMTP_HOST="mail.smtp.host";
 	
 	/**
-	 * smtp用户名
+	 * smtp用户�?
 	 */
 	public static String MAIL_SMTP_USER="mail.smtp.user";
 	/**
@@ -39,22 +39,22 @@ public class ApplicationProperties {
 	 */
 	public static String MAIL_SMTP_PASSWD="mail.smtp.passwd";
 	/**
-	 * 发送人邮件地址
+	 * 发�?人邮件地�?
 	 */
 	public static String MAIL_SENDER_ADDR="mail.sender.addr";	
 	
 	/**
-	 * 服务器地址，申思维增加
+	 * 服务器地�?��申�?维增�?
 	 */
 	public static String EDITOR_SERVER_IP="editor.server.ip";
 	
 	/**
-	 * 服务器端口,申思维增加
+	 * 服务器端�?申�?维增�?
 	 */
 	public static String EDITOR_SERVER_PORT="editor.server.port";
 	
 	/**
-	 * 系统应用名,申思维增加
+	 * 系统应用�?申�?维增�?
 	 */
 	public static String EDITOR_SERVER_CONTEXT="editor.server.context";
 	

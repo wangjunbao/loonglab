@@ -1,4 +1,4 @@
-package cn.kejikeji.common.test;
+package com.kejikeji.common.test;
 
 import org.springframework.test.AbstractTransactionalSpringContextTests;
 
