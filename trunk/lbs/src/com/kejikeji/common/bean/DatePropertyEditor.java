@@ -1,4 +1,4 @@
-package cn.kejikeji.common.bean;
+package com.kejikeji.common.bean;
 
 import java.beans.PropertyEditorSupport;
 import java.text.DateFormat;

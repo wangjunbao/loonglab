@@ -1,4 +1,4 @@
-package cn.kejikeji.common.dao.hibernate;
+package com.kejikeji.common.dao.hibernate;
 
 import java.util.List;
 

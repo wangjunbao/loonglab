@@ -1,4 +1,4 @@
-package cn.kejikeji.common;
+package com.kejikeji.common;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -70,7 +70,7 @@ public class DateUtil {
 	}
 
 	/**
-	 * 将某个时间范围按天进行切分，未满一天的按一天算
+	 * 将某个时间范围按天进行切分，未满�?��的按�?���?
 	 * 
 	 * @param startDate
 	 * @param endDate
@@ -101,7 +101,7 @@ public class DateUtil {
 	}
 	
 	/**
-	 * 将某个时间范围按月进行切分，未满一月的按一月算
+	 * 将某个时间范围按月进行切分，未满�?��的按�?���?
 	 * 
 	 * @param startDate
 	 * @param endDate
@@ -132,7 +132,7 @@ public class DateUtil {
 	}
 
 	/**
-	 * 判断两个时间是否在同一天内
+	 * 判断两个时间是否在同�?���?
 	 * 
 	 * @param date1
 	 * @param date2
@@ -148,7 +148,7 @@ public class DateUtil {
 	}
 
 	/**
-	 * 判断两个时间是否在同一个月内
+	 * 判断两个时间是否在同�?��月内
 	 * 
 	 * @param date1
 	 * @param date2
@@ -166,7 +166,7 @@ public class DateUtil {
 	}
 
 	/**
-	 * 判断两个时间是否在同一季度里
+	 * 判断两个时间是否在同�?��度里
 	 * 
 	 * @param date1
 	 * @param date2

@@ -1,9 +1,26 @@
 package com.kejikeji.lbs.model;
 
+/**
+ * @hibernate.class table="u_user" dynamic-update="true"
+ * @author xpdragon
+ *
+ */
 public class User {
+	/**
+	 * @hibernate.id generator-class="native"
+	 */
 	private Long id;
+	/**
+	 * @hibernate.property
+	 */
 	private String name;
+	/**
+	 * @hibernate.property
+	 */
 	private String passwd;
+	/**
+	 * @hibernate.many-to-one class="cn.kejikeji.lbs.model.LocationCatalog"
+	 */
 	private LocationCatalog curLocation;
 	public Long getId() {
 		return id;

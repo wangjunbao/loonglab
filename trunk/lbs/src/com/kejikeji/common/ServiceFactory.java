@@ -1,4 +1,4 @@
-package cn.kejikeji.common;
+package com.kejikeji.common;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

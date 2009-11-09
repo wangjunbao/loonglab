@@ -1,4 +1,4 @@
-package cn.kejikeji.common.web;
+package com.kejikeji.common.web;
 
 
 import javax.servlet.http.HttpServletRequest;

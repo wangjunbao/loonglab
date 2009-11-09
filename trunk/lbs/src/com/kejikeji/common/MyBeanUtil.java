@@ -1,4 +1,4 @@
-package cn.kejikeji.common;
+package com.kejikeji.common;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.URLEncoder;
