@@ -1,6 +1,14 @@
 package com.kejikeji.lbs.model;
 
+/**
+ * @hibernate.class table="i_message" dynamic-update="true"
+ * @author xpdragon
+ *
+ */
 public class Message {
+	/**
+	 * @hibernate.id generator-class="native"
+	 */
 	private Long id;
 	private String title;
 	private String content;

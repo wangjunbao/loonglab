@@ -4,13 +4,13 @@ import com.kejikeji.lbs.model.User;
 
 public interface UserService {
 	/**
-	 * ×¢²á
+	 * æ³¨å†Œ
 	 * @param user
 	 */
 	public void register(User user);
 	
 	/**
-	 * µÇÂ¼ÇëÇó
+	 * ç™»å½•è¯·æ±‚
 	 * @param user
 	 * @return
 	 */
