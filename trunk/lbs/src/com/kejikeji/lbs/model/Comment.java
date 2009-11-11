@@ -1,6 +1,14 @@
 package com.kejikeji.lbs.model;
 
+/**
+ * @hibernate.class table="i_comment" dynamic-update="true"
+ * @author xpdragon
+ *
+ */
 public class Comment {
+	/**
+	 * @hibernate.id generator-class="native"
+	 */
 	private Long id;
 	private String title;
 	private String content;

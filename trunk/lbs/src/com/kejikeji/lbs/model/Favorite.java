@@ -1,6 +1,14 @@
 package com.kejikeji.lbs.model;
 
+/**
+ * @hibernate.class table="i_favorite" dynamic-update="true"
+ * @author xpdragon
+ *
+ */
 public class Favorite {
+	/**
+	 * @hibernate.id generator-class="native"
+	 */
 	private Long id;
 	private User user;
 	private LocationCatalog location;

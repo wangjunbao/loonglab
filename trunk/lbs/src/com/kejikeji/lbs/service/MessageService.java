@@ -8,33 +8,33 @@ import com.kejikeji.lbs.model.Rank;
 
 public interface MessageService {
 	/**
-	 * »ñÈ¡×îĞÂĞÅÏ¢ÁĞ±í
+	 * è·å–æœ€æ–°ä¿¡æ¯åˆ—è¡¨
 	 * @param locationCode
 	 * @return
 	 */
 	public List<Message> getLastedMessages(String locationCode);
 	
 	/**
-	 * »ñÈ¡Ö¸¶¨ÏûÏ¢
+	 * è·å–æŒ‡å®šæ¶ˆæ¯
 	 * @param id
 	 * @return
 	 */
 	public Message getById(Long id);
 	
 	/**
-	 * ·¢²¼Ä³ÏûÏ¢
+	 * å‘å¸ƒæŸæ¶ˆæ¯
 	 * @param message
 	 */
 	public void publish(Message message);
 	
 	/**
-	 * Ìí¼ÓÆÀÂÛ
+	 * æ·»åŠ è¯„è®º
 	 * @param comment
 	 */
 	public void addComment(Comment comment);
 	
 	/**
-	 * Ìí¼ÓÆÀ¼¶
+	 * æ·»åŠ è¯„çº§
 	 * @param rank
 	 */
 	public void addRank(Rank rank);

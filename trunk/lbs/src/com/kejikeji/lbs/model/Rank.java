@@ -1,6 +1,14 @@
 package com.kejikeji.lbs.model;
 
+/**
+ * @hibernate.class table="i_rank" dynamic-update="true"
+ * @author xpdragon
+ *
+ */
 public class Rank {
+	/**
+	 * @hibernate.id generator-class="native"
+	 */
 	private Long id;
 	private int rating;
 	private User user;
