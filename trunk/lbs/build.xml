@@ -116,7 +116,7 @@
 		<xdoclet encoding="UTF-8">
 			<!-- defines the file handled by xdoclet2 -->
 			<fileset dir="${src.dir}">
-				<include name="/**/model/**/*.java"/>
+				<include name="com/kejikeji/**/model/**/*.java"/>
 			</fileset>
 			<!-- defines the processing of a plugin -->
 			<component classname="org.xdoclet.plugin.hibernate.HibernateMappingPlugin"
