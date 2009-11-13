@@ -18,11 +18,11 @@
 		</property>
 	</bean>
 	
-	<bean id="applicationProperties" class="cn.bidlink.common.ApplicationProperties">
+	<bean id="applicationProperties" class="com.kejikeji.common.ApplicationProperties">
 		<property name="prop"><ref bean="propertyBean"/></property>
 	</bean>
 	
-	
+	<!-- 
 	<bean id="nativeJdbcExtractor" class="org.springframework.jdbc.support.nativejdbc.C3P0NativeJdbcExtractor"/> 
     
     <bean id="oracleLobHandler" class="org.springframework.jdbc.support.lob.OracleLobHandler"> 
@@ -30,6 +30,7 @@
             <ref local="nativeJdbcExtractor"/> 
         </property> 
     </bean>
+     -->
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
 		<property name="driverClass" value="${hibernate.connection.driver_class}"/>
 		<property name="jdbcUrl" value="${hibernate.connection.url}"/>
@@ -44,12 +45,14 @@
      <!-- property name="entityInterceptor"><ref bean="quoteTableInterceptor"/></property-->
 		<property name="mappingDirectoryLocations">
 			<list>
-				<value>classpath:cn/bidlink</value>
+				<value>classpath:com/kejikeji</value>
 			</list>
 		</property>
+		<!-- 
 		<property name="lobHandler"> 
             <ref bean="oracleLobHandler"/> 
         </property>
+         -->
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
@@ -78,11 +81,11 @@
 	</bean>
 	    
 	<!-- 公共的dao -->
-	<bean id="commonDAO" class="cn.bidlink.common.dao.hibernate.CommonDAOHibernate">
+	<bean id="commonDAO" class="com.kejikeji.common.dao.hibernate.CommonDAOHibernate">
         <property name="sessionFactory"><ref bean="sessionFactory"/></property>
     </bean> 
     
-    <bean id="serviceFactory" class="cn.bidlink.common.ServiceFactory">        
+    <bean id="serviceFactory" class="com.kejikeji.common.ServiceFactory">        
     </bean> 
     <!-- 
     <bean id="hibernateInterceptor" class="org.springframework.orm.hibernate3.HibernateInterceptor">
