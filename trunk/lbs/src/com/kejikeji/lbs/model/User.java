@@ -19,7 +19,7 @@ public class User {
 	 */
 	private String passwd;
 	/**
-	 * @hibernate.many-to-one class="cn.kejikeji.lbs.model.LocationCatalog"
+	 * @hibernate.many-to-one class="com.kejikeji.lbs.model.LocationCatalog"
 	 */
 	private LocationCatalog curLocation;
 	public Long getId() {

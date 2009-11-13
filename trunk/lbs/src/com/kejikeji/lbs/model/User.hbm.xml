@@ -8,6 +8,6 @@
     </id>
     <property name="name"/>
     <property name="passwd"/>
-    <many-to-one name="curLocation" class="cn.kejikeji.lbs.model.LocationCatalog"/>
+    <many-to-one name="curLocation" class="com.kejikeji.lbs.model.LocationCatalog"/>
   </class>
 </hibernate-mapping>
