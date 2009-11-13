@@ -116,7 +116,8 @@
 		<xdoclet encoding="UTF-8">
 			<!-- defines the file handled by xdoclet2 -->
 			<fileset dir="${src.dir}">
-				<include name="com/kejikeji/**/model/**/*.java"/>
+				<include name="com/kejikeji/**/model/**/User.java"/>
+				<include name="com/kejikeji/**/model/**/LocationCatalog.java"/>
 			</fileset>
 			<!-- defines the processing of a plugin -->
 			<component classname="org.xdoclet.plugin.hibernate.HibernateMappingPlugin"
@@ -130,7 +131,7 @@
 		<delete file="${src.dir}/schema.sql"/>
 		<schemaexport quiet="no" text="yes" drop="no" delimiter=";" properties="${src.dir}/hibernate.properties" output="${src.dir}/schema.sql">
 			<fileset dir="${src.dir}">
-				<include name="/**/*.hbm.xml"/>
+				<include name="com/kejikeji/**/*.hbm.xml"/>
      		</fileset>
 		</schemaexport>
 	</target>

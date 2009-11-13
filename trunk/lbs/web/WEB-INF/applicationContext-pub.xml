@@ -1,46 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
-	<bean id="staticPubService" parent="txProxyTemplate">
+	<bean id="userService" parent="txProxyTemplate">
         <property name="target">
-            <bean class="cn.bidlink.staticpub.service.impl.StaticPubServiceImpl">
+            <bean class="com.kejikeji.lbs.service.impl.UserServiceImpl">
             	<property name="dao"><ref bean="commonDAO" /></property>
             </bean>
         </property>
         <property name="proxyInterfaces">
-            <value>cn.bidlink.staticpub.service.IStaticPubService</value>
+            <value>com.kejikeji.lbs.service.UserService</value>
         </property>
     </bean> 
-
-	<bean id="ebnewUrlGenerator" class="cn.bidlink.staticpub.service.impl.EbnewUrlGenerator">
-    	<property name="websiteHostName"><value>${website.host.name}</value></property>
-    	<property name="staticRootDir"><value>${static.root.dir}</value></property>
-    	
-    </bean>
-    
-    <bean id="publisher" class="cn.bidlink.staticpub.Publisher">
-    	<property name="staticPubService"><ref bean="staticPubService" /></property>
-    	<property name="urlGenerator"><ref bean="ebnewUrlGenerator" /></property>
-    </bean>
-    
-    <bean id="publishTask" class="cn.bidlink.staticpub.PublishTask">
-    	<property name="publisher"><ref bean="publisher" /></property>
-    	<property name="enable"><value>${static.publish.enable}</value></property>    	
-    	
-    </bean>
-    
-    <bean id="scheduledTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
-	    <property name="delay" value="10000" />
-	    <property name="period" value="10000" />
-	    <property name="timerTask" ref="publishTask" />
-	</bean>
-
-    <bean id="timerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean">
-	    <property name="scheduledTimerTasks">
-	        <list>
-	            <ref bean="scheduledTask" />
-	        </list>
-	    </property>
-	</bean>
 
 </beans>
