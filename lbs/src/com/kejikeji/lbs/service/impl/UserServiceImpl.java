@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
+import sun.security.provider.MD5;
+
 import com.kejikeji.common.dao.CommonDaoSupport;
 import com.kejikeji.lbs.model.User;
 import com.kejikeji.lbs.service.UserService;
@@ -21,8 +23,15 @@ public class UserServiceImpl extends CommonDaoSupport implements UserService {
 
 	@Override
 	public void register(User user) {
+		user.setPasswd(DigestUtils.md5Hex(user.getPasswd()));
 		dao.save(user);
 
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(DigestUtils.md5Hex("123").substring(8,24)+",202cb962ac59075b964b07152d234b70");
+
+		
 	}
 
 }

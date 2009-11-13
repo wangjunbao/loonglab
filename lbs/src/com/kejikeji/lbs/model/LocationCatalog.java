@@ -14,6 +14,18 @@ public class LocationCatalog {
 	 * @hibernate.property
 	 */
 	private String name;
+	
+	
+	
+	public LocationCatalog() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	public LocationCatalog(String code, String name) {
+		super();
+		this.code = code;
+		this.name = name;
+	}
 	public String getCode() {
 		return code;
 	}
