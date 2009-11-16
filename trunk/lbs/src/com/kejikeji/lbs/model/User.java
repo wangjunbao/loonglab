@@ -22,6 +22,18 @@ public class User {
 	 * @hibernate.many-to-one class="com.kejikeji.lbs.model.LocationCatalog"
 	 */
 	private LocationCatalog curLocation;
+	
+	
+	
+	
+	public User(Long id) {
+		super();
+		this.id = id;
+	}
+	public User() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	public Long getId() {
 		return id;
 	}
