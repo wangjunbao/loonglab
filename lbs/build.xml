@@ -118,6 +118,7 @@
 			<fileset dir="${src.dir}">
 				<include name="com/kejikeji/**/model/**/User.java"/>
 				<include name="com/kejikeji/**/model/**/LocationCatalog.java"/>
+				<include name="com/kejikeji/**/model/**/Message.java"/>
 			</fileset>
 			<!-- defines the processing of a plugin -->
 			<component classname="org.xdoclet.plugin.hibernate.HibernateMappingPlugin"

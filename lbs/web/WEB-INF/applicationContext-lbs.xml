@@ -12,4 +12,15 @@
         </property>
     </bean> 
 
+	<bean id="messageService" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="com.kejikeji.lbs.service.impl.MessageServiceImpl">
+            	<property name="dao"><ref bean="commonDAO" /></property>
+            </bean>
+        </property>
+        <property name="proxyInterfaces">
+            <value>com.kejikeji.lbs.service.MessageService</value>
+        </property>
+    </bean>
+	
 </beans>
