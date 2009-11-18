@@ -3,6 +3,8 @@ package org.json;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.kejikeji.lbs.view.bean.Result;
+
 import junit.framework.TestCase;
 
 public class JSONObjectTest extends TestCase {
@@ -202,8 +204,10 @@ public class JSONObjectTest extends TestCase {
 	}
 
 	public void testPutStringObject() throws Exception{
-		JSONObject json=new JSONObject();
-		json.put("resultCode", "10021");
+		
+		JSONObject json=new JSONObject(new Result(Result.E_USER_REGISTER_USER_EXIST));
+//		json.put("resultCode", "10021");
+		
 		log.info(json.toString());
 		//fail("Not yet implemented");
 	}

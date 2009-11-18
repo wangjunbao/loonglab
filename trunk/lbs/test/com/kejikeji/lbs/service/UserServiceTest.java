@@ -16,7 +16,7 @@ public class UserServiceTest extends BaseSpringTestCase {
 	public void testRegister() {
 		User user=new User();
 		user.setName("中文");
-		user.setPasswd("haha");
+		user.setPassword("haha");
 		
 		user.setCurLocation(new LocationCatalog("860010",""));
 		
