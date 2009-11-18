@@ -7,7 +7,7 @@ public interface UserService {
 	 * 注册
 	 * @param user
 	 */
-	public void register(User user);
+	public int register(User user);
 	
 	/**
 	 * 登录请求

@@ -9,22 +9,28 @@ import sun.security.provider.MD5;
 import com.kejikeji.common.dao.CommonDaoSupport;
 import com.kejikeji.lbs.model.User;
 import com.kejikeji.lbs.service.UserService;
+import com.kejikeji.lbs.view.bean.Result;
 
 public class UserServiceImpl extends CommonDaoSupport implements UserService {
 
 	@Override
 	public User login(String username,String passwd) {
 		String passMd5=DigestUtils.md5Hex(passwd);
-		List<User> userList=dao.find("from User u where u.name=? and u.passwd=?",username,passMd5);
+		List<User> userList=dao.find("from User u where u.name=? and u.password=?",username,passMd5);
 		if(userList.size()>0)
 			return userList.get(0);
 		return null;
 	}
 
 	@Override
-	public void register(User user) {
-		user.setPasswd(DigestUtils.md5Hex(user.getPasswd()));
+	public int register(User user) {
+		List<User> userList=dao.find("from User u where u.name=?",user.getName());
+		if(userList.size()>0)
+			return Result.E_USER_REGISTER_USER_EXIST;
+		
+		user.setPassword(DigestUtils.md5Hex(user.getPassword()));
 		dao.save(user);
+		return Result.SUCCESS;
 
 	}
 	
