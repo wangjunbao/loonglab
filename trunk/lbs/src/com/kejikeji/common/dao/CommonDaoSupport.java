@@ -12,6 +12,8 @@ package com.kejikeji.common.dao;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.kejikeji.lbs.model.Comment;
+
 public abstract class CommonDaoSupport {
 	protected Log log = LogFactory.getLog(this.getClass());
 	
@@ -32,6 +34,8 @@ public abstract class CommonDaoSupport {
 	public void setLog(Log log) {
 		this.log = log;
 	}
+
+
 	
 	
 }

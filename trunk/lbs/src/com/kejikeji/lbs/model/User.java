@@ -15,9 +15,9 @@ public class User {
 	 */
 	private String name;
 	/**
-	 * @hibernate.property
+	 * @hibernate.property column="passwd"
 	 */
-	private String passwd;
+	private String password;
 	/**
 	 * @hibernate.many-to-one class="com.kejikeji.lbs.model.LocationCatalog"
 	 */
@@ -46,11 +46,11 @@ public class User {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getPasswd() {
-		return passwd;
+	public String getPassword() {
+		return password;
 	}
-	public void setPasswd(String passwd) {
-		this.passwd = passwd;
+	public void setPassword(String passwd) {
+		this.password = passwd;
 	}
 	public LocationCatalog getCurLocation() {
 		return curLocation;
