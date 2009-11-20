@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.kejikeji.lbs.model.Comment;
 import com.kejikeji.lbs.model.Message;
-import com.kejikeji.lbs.model.Rank;
 
 public interface MessageService {
 	/**
@@ -32,10 +31,4 @@ public interface MessageService {
 	 * @param comment
 	 */
 	public void addComment(Comment comment);
-	
-	/**
-	 * 添加评级
-	 * @param rank
-	 */
-	public void addRank(Rank rank);
 }

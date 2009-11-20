@@ -2,12 +2,14 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-  <class dynamic-update="true" table="u_user" name="com.kejikeji.lbs.model.User">
+  <class dynamic-update="true" table="i_comment" name="com.kejikeji.lbs.model.Comment">
     <id name="id">
       <generator class="native"/>
     </id>
-    <property name="userName" column="name"/>
-    <property name="password" column="passwd"/>
-    <many-to-one name="curLocation" class="com.kejikeji.lbs.model.LocationCatalog"/>
+    <property name="title"/>
+    <property name="comment"/>
+    <property name="postId"/>
+    <many-to-one name="publisher" class="com.kejikeji.lbs.model.User"/>
+    <property name="pubdate"/>
   </class>
 </hibernate-mapping>

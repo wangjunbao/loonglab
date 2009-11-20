@@ -16,7 +16,7 @@ public class UserServiceImpl extends CommonDaoSupport implements UserService {
 	@Override
 	public User login(String username,String passwd) {
 		String passMd5=DigestUtils.md5Hex(passwd);
-		List<User> userList=dao.find("from User u where u.name=? and u.password=?",username,passMd5);
+		List<User> userList=dao.find("from User u where u.userName=? and u.password=?",username,passMd5);
 		if(userList.size()>0)
 			return userList.get(0);
 		return null;
@@ -24,7 +24,7 @@ public class UserServiceImpl extends CommonDaoSupport implements UserService {
 
 	@Override
 	public int register(User user) {
-		List<User> userList=dao.find("from User u where u.name=?",user.getName());
+		List<User> userList=dao.find("from User u where u.userName=?",user.getUserName());
 		if(userList.size()>0)
 			return Result.E_USER_REGISTER_USER_EXIST;
 		

@@ -1,10 +1,5 @@
 package com.kejikeji.lbs.model;
 
-/**
- * @hibernate.class table="l_ip_location" dynamic-update="true"
- * @author xpdragon
- *
- */
 public class IpLocation {
 	/**
 	 * @hibernate.id generator-class="native"

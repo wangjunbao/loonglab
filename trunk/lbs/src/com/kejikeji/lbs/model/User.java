@@ -11,9 +11,9 @@ public class User {
 	 */
 	private Long id;
 	/**
-	 * @hibernate.property
+	 * @hibernate.property column="name"
 	 */
-	private String name;
+	private String userName;
 	/**
 	 * @hibernate.property column="passwd"
 	 */
@@ -40,11 +40,11 @@ public class User {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getName() {
-		return name;
+	public String getUserName() {
+		return userName;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setUserName(String name) {
+		this.userName = name;
 	}
 	public String getPassword() {
 		return password;
