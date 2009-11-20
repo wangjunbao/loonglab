@@ -2,10 +2,12 @@ package com.kejikeji.lbs.service;
 
 import java.util.Date;
 
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.kejikeji.common.test.BaseSpringTestCase;
+import com.kejikeji.lbs.model.Comment;
 import com.kejikeji.lbs.model.LocationCatalog;
 import com.kejikeji.lbs.model.Message;
 import com.kejikeji.lbs.model.User;
@@ -22,7 +24,7 @@ public class MessageServiceTest extends BaseSpringTestCase {
 
 	public void testGetById() {
 		Message ms=messageService.getById(1L);
-		log.info(ms.getUser().getName());
+		log.info(ms.getUser().getUserName());
 	}
 
 	public void testPublish() {
@@ -41,7 +43,16 @@ public class MessageServiceTest extends BaseSpringTestCase {
 	}
 
 	public void testAddComment() {
-		fail("Not yet implemented");
+		Comment comment=new Comment();
+		comment.setComment("hihi");
+		comment.setPostId(1L);
+		comment.setTitle("haha");
+		comment.setPublisher(new User(2L));
+		comment.setPubdate(new Date());
+		
+		messageService.addComment(comment);
+		
+		super.setComplete();
 	}
 
 	public void testAddRank() {

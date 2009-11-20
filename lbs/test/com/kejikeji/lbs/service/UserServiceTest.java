@@ -15,7 +15,7 @@ public class UserServiceTest extends BaseSpringTestCase {
 	
 	public void testRegister() {
 		User user=new User();
-		user.setName("中文");
+		user.setUserName("test3");
 		user.setPassword("haha");
 		
 		user.setCurLocation(new LocationCatalog("860010",""));
@@ -26,8 +26,8 @@ public class UserServiceTest extends BaseSpringTestCase {
 	}
 
 	public void testLogin() {
-		User user=userService.login("中文", "haha");
-		log.info(user.getName());
+		User user=userService.login("test3", "haha");
+		log.info(user.getUserName());
 	}
 
 }

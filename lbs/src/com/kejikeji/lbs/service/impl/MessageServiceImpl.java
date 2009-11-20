@@ -5,22 +5,16 @@ import java.util.List;
 import com.kejikeji.common.dao.CommonDaoSupport;
 import com.kejikeji.lbs.model.Comment;
 import com.kejikeji.lbs.model.Message;
-import com.kejikeji.lbs.model.Rank;
 import com.kejikeji.lbs.service.MessageService;
 
 public class MessageServiceImpl extends CommonDaoSupport implements MessageService {
 
 	@Override
 	public void addComment(Comment comment) {
-		// TODO Auto-generated method stub
+		dao.save(comment);
 
 	}
 
-	@Override
-	public void addRank(Rank rank) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public Message getById(Long id) {
