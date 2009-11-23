@@ -12,7 +12,7 @@ public class PostCondition {
 	private Long startPostId;
 	private int expectedPostsNum=20;
 	private String locationCode;
-	private Long userId;
+	private Long reporterId;
 	private String deviceType;
 	private String deviceResolution;
 	public Date getExpectedDate() {
@@ -41,10 +41,10 @@ public class PostCondition {
 		this.locationCode = locationCode;
 	}
 	public Long getUserId() {
-		return userId;
+		return reporterId;
 	}
 	public void setUserId(Long userId) {
-		this.userId = userId;
+		this.reporterId = userId;
 	}
 	public String getDeviceType() {
 		return deviceType;
