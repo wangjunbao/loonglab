@@ -25,3 +25,15 @@ publisher bigint,
 pubdate datetime,
 primary key (id)
 );
+
+create table i_message(
+id bigint NOT NULL AUTO_INCREMENT,
+title varchar(255),
+content varchar(2000),
+user bigint,
+location varchar(255),
+picFile varchar(255),
+audioFile varchar(255),
+pubdate datetime,
+primary key (id)
+);
