@@ -2,8 +2,10 @@ package com.kejikeji.lbs.service;
 
 import java.util.List;
 
+import com.kejikeji.common.dao.hibernate.PageBean;
 import com.kejikeji.lbs.model.Comment;
 import com.kejikeji.lbs.model.Message;
+import com.kejikeji.lbs.view.bean.PostCondition;
 
 public interface MessageService {
 	/**
@@ -11,7 +13,7 @@ public interface MessageService {
 	 * @param locationCode
 	 * @return
 	 */
-	public List<Message> getLastedMessages(String locationCode);
+	public List<Message> getLastedMessages(PostCondition condition,PageBean page);
 	
 	/**
 	 * 获取指定消息

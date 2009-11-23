@@ -27,7 +27,7 @@ public class UserServiceTest extends BaseSpringTestCase {
 
 	public void testLogin() {
 		User user=userService.login("test3", "haha");
-		log.info(user.getUserName());
+		log.info(user.getCurLocation().getName());
 	}
 
 }
