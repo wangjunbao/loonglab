@@ -35,7 +35,7 @@ public class MessageServiceTest extends BaseSpringTestCase {
 		ms.setPicFile("ddd");
 		ms.setPubDate(new Date());
 		ms.setTitle("tttt");
-		ms.setUser(new User(2L));
+		ms.setUser(new User(1L));
 		
 		messageService.publish(ms);
 		
