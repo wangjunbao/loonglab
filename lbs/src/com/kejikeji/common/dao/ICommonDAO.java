@@ -143,4 +143,9 @@ public interface ICommonDAO {
 	 *
 	 */
 	public void clear();
+	
+	/**
+	 * 合并，如果有id相同的则更新，否则插入
+	 */
+	public void merge(Object obj);
 }
