@@ -106,4 +106,10 @@ public class CommonDAOHibernate extends HibernateDaoSupport implements ICommonDA
 		
 	}
 
+	@Override
+	public void merge(Object obj) {
+		
+		getHibernateTemplate().merge(obj);
+	}
+
 }
