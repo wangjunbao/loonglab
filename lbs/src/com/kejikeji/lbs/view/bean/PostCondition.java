@@ -8,18 +8,18 @@ import java.util.Date;
  *
  */
 public class PostCondition {
-	private Date expectedDate;
+	private String expectedDate;
 	private Long startPostId;
 	private int expectedPostsNum=20;
 	private String locationCode;
 	private Long reporterId;
 	private String deviceType;
 	private String deviceResolution;
-	public Date getExpectedDate() {
+	public String getExpectedDate() {
 		return expectedDate;
 	}
 	
-	public void setExpectedDate(Date expectedDate) {
+	public void setExpectedDate(String expectedDate) {
 		this.expectedDate = expectedDate;
 	}
 	public Long getStartPostId() {
@@ -40,10 +40,10 @@ public class PostCondition {
 	public void setLocationCode(String locationCode) {
 		this.locationCode = locationCode;
 	}
-	public Long getUserId() {
+	public Long getReporterId() {
 		return reporterId;
 	}
-	public void setUserId(Long userId) {
+	public void setReporterId(Long userId) {
 		this.reporterId = userId;
 	}
 	public String getDeviceType() {
