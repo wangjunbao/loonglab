@@ -26,24 +26,26 @@ public class MessageServiceImpl extends CommonDaoSupport implements MessageServi
 
 	@Override
 	public List<Message> getLastedMessages(PostCondition condition,PageBean page) {
-		String hqlStr="from Message m where ";
+		String hqlStr="from Message m where 1=1 ";
 		List<Object> paramList=new ArrayList<Object>();
-		if(condition.getUserId()!=null){
-			hqlStr=hqlStr+"m.user.id=? ";
-			paramList.add(condition.getUserId());
+		if(condition.getReporterId()!=null){
+			hqlStr=hqlStr+"and m.user.id=? ";
+			paramList.add(condition.getReporterId());
 		}
-		if(condition.getExpectedDate()!=null){
-			hqlStr=hqlStr+"m.pubDate<? ";
-			paramList.add(condition.getExpectedDate());
-		}
+//		if(condition.getExpectedDate()!=null){
+//			hqlStr=hqlStr+"m.pubDate<? ";
+//			paramList.add(condition.getExpectedDate());
+//		}
 		if(condition.getLocationCode()!=null){
-			hqlStr=hqlStr+"m.location.code=? ";
+			hqlStr=hqlStr+"and m.location.code=? ";
 			paramList.add(condition.getLocationCode());
 		}
 		if(condition.getStartPostId()!=null){
-			hqlStr=hqlStr+"m.id>?";
+			hqlStr=hqlStr+"and m.id>=?";
 			paramList.add(condition.getStartPostId());
 		}
+		
+		hqlStr=hqlStr+" order by m.id desc";
 		
 		dao.find(hqlStr,page,paramList.toArray());
 		
