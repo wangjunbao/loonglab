@@ -5,6 +5,7 @@
 		<property name="mappings">
 			<props>
 				<prop key="/users/*.view">userAction</prop>
+				<prop key="/posts/*.view">messageAction</prop>
 			</props>
 		</property>
 	</bean>
@@ -12,6 +13,10 @@
 
 	<bean id="userAction" class="com.kejikeji.lbs.web.UserAction" >
 		<property name="userService"><ref bean="userService" /></property>
+	</bean>
+	
+	<bean id="messageAction" class="com.kejikeji.lbs.web.Messagection" >
+		<property name="messageService"><ref bean="messageService" /></property>
 	</bean>
 
 </beans>
