@@ -1,0 +1,16 @@
+<projectDescription>
+  <name>cas-server-webapp</name>
+  <comment>Defaults for JA-SIG Maven2 projects.</comment>
+  <projects>
+    <project>cas-server-core</project>
+    <project>cas-server-support-ldap</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
