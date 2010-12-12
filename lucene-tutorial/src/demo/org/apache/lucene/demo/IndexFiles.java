@@ -57,6 +57,7 @@ public class IndexFiles {
     try {
       IndexWriter writer = new IndexWriter(FSDirectory.open(INDEX_DIR), new StandardAnalyzer(Version.LUCENE_CURRENT), true, IndexWriter.MaxFieldLength.LIMITED);
       System.out.println("Indexing to directory '" +INDEX_DIR+ "'...");
+      writer.setUseCompoundFile(false);
       indexDocs(writer, docDir);
       System.out.println("Optimizing...");
       writer.optimize();
