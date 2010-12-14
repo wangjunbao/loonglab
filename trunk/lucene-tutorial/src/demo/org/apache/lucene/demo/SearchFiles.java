@@ -126,7 +126,7 @@ public class SearchFiles {
     if (queries != null) {
       in = new BufferedReader(new FileReader(queries));
     } else {
-      in = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
+      in = new BufferedReader(new InputStreamReader(System.in));
     }
     QueryParser parser = new QueryParser(Version.LUCENE_CURRENT, field, analyzer);
     while (true) {
@@ -134,6 +134,8 @@ public class SearchFiles {
         System.out.println("Enter query: ");
 
       String line = in.readLine();
+      
+      System.out.println("line is "+line);
 
       if (line == null || line.length() == -1)
         break;
