@@ -44,7 +44,7 @@ public class FieldCacheDemo {
 			System.out.println(value+"="+gf.getCountMap().get(value));
 		}
 
-
+		reader.close();
 	}
 
 }
