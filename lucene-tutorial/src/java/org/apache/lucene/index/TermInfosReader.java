@@ -23,6 +23,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.cache.Cache;
 import org.apache.lucene.util.cache.SimpleLRUCache;
 import org.apache.lucene.util.CloseableThreadLocal;
+import org.loonglab.demo.W;
 
 /** This stores a monotonically increasing set of <Term, TermInfo> pairs in a
  * Directory.  Pairs are accessed either by Term or by ordinal position the
@@ -72,8 +73,9 @@ final class TermInfosReader {
           readBufferSize), fieldInfos, false);
       size = origEnum.size;
 
-
+      
       if (indexDivisor != -1) {
+    	W.start("indexTermEnum");
         // Load terms index
         totalIndexInterval = origEnum.indexInterval * indexDivisor;
         final SegmentTermEnum indexEnum = new SegmentTermEnum(directory.openInput(segment + "." + IndexFileNames.TERMS_INDEX_EXTENSION,
@@ -98,6 +100,7 @@ final class TermInfosReader {
         } finally {
           indexEnum.close();
         }
+        W.end("indexTermEnum");
       } else {
         // Do not load terms index:
         totalIndexInterval = -1;

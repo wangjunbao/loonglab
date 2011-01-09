@@ -479,7 +479,7 @@
    <field name="bidFlag" type="string" indexed="true" stored="false"/>
    <field name="openState" type="string" indexed="true" stored="false"/>
    <field name="docSource" type="string" indexed="true" stored="false"/>
-   <field name="responseNum" type="int" indexed="true" stored="false"/>
+   <field name="responseNum" type="string" indexed="true" stored="false"/>
    <field name="hotId" type="string" indexed="true" stored="false"/>
 
    <!-- projInfo -->

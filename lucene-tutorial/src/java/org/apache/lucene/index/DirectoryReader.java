@@ -36,6 +36,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.Lock;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.search.FieldCache; // not great (circular); used only to purge FieldCache entry on close
+import org.loonglab.demo.W;
 
 /** 
  * An IndexReader which reads indexes with multiple segments.
@@ -69,8 +70,11 @@ class DirectoryReader extends IndexReader implements Cloneable {
     return (IndexReader) new SegmentInfos.FindSegmentsFile(directory) {
       @Override
       protected Object doBody(String segmentFileName) throws CorruptIndexException, IOException {
+    	W.start("segInfo");
         SegmentInfos infos = new SegmentInfos();
         infos.read(directory, segmentFileName);
+        W.end("segInfo");
+        
         if (readOnly)
           return new ReadOnlyDirectoryReader(directory, infos, deletionPolicy, termInfosIndexDivisor);
         else
@@ -81,6 +85,9 @@ class DirectoryReader extends IndexReader implements Cloneable {
 
   /** Construct reading the named set of readers. */
   DirectoryReader(Directory directory, SegmentInfos sis, IndexDeletionPolicy deletionPolicy, boolean readOnly, int termInfosIndexDivisor) throws IOException {
+	
+	W.start("dirReader");
+	  
     this.directory = directory;
     this.readOnly = readOnly;
     this.segmentInfos = sis;
@@ -99,11 +106,14 @@ class DirectoryReader extends IndexReader implements Cloneable {
     // the newest segments first.
 
     SegmentReader[] readers = new SegmentReader[sis.size()];
+    
     for (int i = sis.size()-1; i >= 0; i--) {
       boolean success = false;
       try {
+    	W.start("segReader"+i);
         readers[i] = SegmentReader.get(readOnly, sis.info(i), termInfosIndexDivisor);
         success = true;
+        W.end("segReader"+i);
       } finally {
         if (!success) {
           // Close all readers we had opened:
@@ -117,8 +127,11 @@ class DirectoryReader extends IndexReader implements Cloneable {
         }
       }
     }
+    
 
     initialize(readers);
+    
+    W.end("dirReader");
   }
 
   // Used by near real-time search

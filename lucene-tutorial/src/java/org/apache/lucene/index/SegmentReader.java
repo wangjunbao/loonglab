@@ -38,6 +38,7 @@ import org.apache.lucene.store.IndexOutput;
 import org.apache.lucene.util.BitVector;
 import org.apache.lucene.util.CloseableThreadLocal;
 import org.apache.lucene.search.FieldCache; // not great (circular); used only to purge FieldCache entry on close
+import org.loonglab.demo.W;
 
 /** @version $Id */
 /**
@@ -116,10 +117,13 @@ public class SegmentReader extends IndexReader implements Cloneable {
         }
         cfsDir = dir0;
 
+        W.start("fieldinfo");
         fieldInfos = new FieldInfos(cfsDir, segment + "." + IndexFileNames.FIELD_INFOS_EXTENSION);
-
+        W.end("fieldinfo");
         this.termsIndexDivisor = termsIndexDivisor;
+        W.start("termInfoReader");
         TermInfosReader reader = new TermInfosReader(cfsDir, segment, fieldInfos, readBufferSize, termsIndexDivisor);
+        W.end("termInfoReader");
         if (termsIndexDivisor == -1) {
           tisNoIndex = reader;
         } else {
